@@ -32,7 +32,5 @@ legend('Point Charge','Surface Bound Charges','Patch Forces','Net Force','Locati
 
 finished = true;
 
-
-
 end
 

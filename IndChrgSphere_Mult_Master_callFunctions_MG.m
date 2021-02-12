@@ -12,19 +12,19 @@ path2 = strcat(currFolder,'\Functions\Plots');  addpath(path2);
 
 
 % Logicals
-lshowNVects = true;
+lshowNVects = false;
 lshowSurfaceCharge = true;
-lshowPEResults = false;
+lshowPEResults = true;
 lshowForceResults = true;
 
 
 % Sphere and Medium Parameters
 R = 1;
-NpatchesSph = 200; % Number of patches per sphere
+NpatchesSph = 1000; % Number of patches per sphere
 dA = 4*pi*(R^2)/NpatchesSph;
 numSpheres = 1; 
 Npatches = numSpheres*NpatchesSph;
-dxs = [0,0,0]; dys = [0, 2.5*R, 5*R]; dzs = [0,0,0]
+dxs = [0,0,0]; dys = [0, 2.5*R, 5*R]; dzs = [0,0,0];
 
 sigma_f = zeros(Npatches,1); % Neglecting any free charges (perfect insulator?)
 k_obj = 1;
@@ -56,12 +56,14 @@ z = zeros(length(Npatches),1);
 % Fibonacci method
 gRat = (sqrt(5.0)+1.0)/2.0; % Golden Ratio
 gAng = (2.0 - gRat)*(2.0*pi);
-for i = 1:Npatches
+for n = 1:numSpheres
+for i = 1:NpatchesSph
     lat = asin(-1.0+2.0*double(i)/(Npatches+1));
     lon = gAng*i;
-    x(i) = R*cos(lon)*cos(lat);
-    y(i) = R*sin(lon)*cos(lat);
-    z(i) = R*sin(lat);
+    x(i) = R*cos(lon)*cos(lat) + dxs(n);
+    y(i) = R*sin(lon)*cos(lat) + dys(n);
+    z(i) = R*sin(lat) + dzs(n);
+end
 end
 
 x=x'; y=y'; z=z';
@@ -79,8 +81,8 @@ if(lshowNVects)
 end
 
 %% CALL FUNCTIONS
-[sigma_b,b] = F_getSigmaB_Loops(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_f,k_air,k_obj);
-[sigma_b2,b2] = F_getSigmaB_Matrix(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_f,k_air,k_obj);
+[sigma_b,b] = F_getSigmaB_Loops(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj);
+[sigma_b2,b2] = F_getSigmaB_Matrix(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj);
 
 %{
 %Check if sigma_b result is the same...
@@ -92,7 +94,7 @@ sigma = sigma_b + sigma_f;
 
 if(lshowSurfaceCharge)
     figure();
-    F_Plot_sigmaB(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0);
+    F_Plot_sigmaB(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma,k_air,k_obj,epsilon_0);
     %{
     fig2 = figure(2);
     scatter3(x,y,z,12,sigma_b,'filled');
@@ -123,14 +125,14 @@ end
 
 if(lshowPEResults)
     figure();
-    lPlotPEValid = F_Plot_PEValidation(R,x,y,z,nVect,y_pc,z_pc,pcharge,sigma_f,epsilon_0 );
+    F_Plot_PEValidation(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,epsilon_0 );
 end
 
 %% Electrostatic Force Calculation
 
 if(lshowForceResults)
     figure();
-    F_Plot_ForceVectors(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_b,sigma_f,k_air,k_obj,epsilon_0);
+    F_Plot_ForceVectors(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_b,sigma_f,k_air,k_obj,epsilon_0);
 end
 
 

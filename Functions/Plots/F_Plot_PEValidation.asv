@@ -118,6 +118,7 @@ for j = 1:length(k_tildaVect)
 end
 
 
+
     hold on;
     
     % Note: Cell Array of Colors Requires Curly Braces!
@@ -126,6 +127,7 @@ end
     for i = 1:length(PE_vect_anal(1,:))
         plot(d_vect_anal,PE_vect_anal(:,i),'color',colorsVect{i});
     end
+    
     
     scatter(R_vect, U_kt0_Norm, 50, colorsVect{1}, '^', 'filled', 'MarkerEdgeColor', 'k');
     scatter(R_vect, U_kt0p025_Norm, 50, colorsVect{2}, '^', 'filled', 'MarkerEdgeColor', 'k');

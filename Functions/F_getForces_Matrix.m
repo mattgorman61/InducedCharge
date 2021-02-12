@@ -17,16 +17,18 @@ function [Ftot,Fx,Fy,Fz] = F_getForces_Matrix(R,x,y,z,nVect,x_pc,y_pc,z_pc,pchar
     
 
 Recall: F = qE = 1/4/pi/epsilon_0*q1*q2*r/(r^3)
+        Only need to consider Force of point charge on each patch. The
+        patches form one body (cannot apply a force to itself)
+        
+        This calculation is only valid at a snapshot in time, sigma_b
+        evolves over time.
 %}
 
 Npatches = length(x);
 dA = 4*pi*(R^2)/Npatches;
-A2 = zeros(Npatches);
 
-Fx = zeros(length(Npatches),1);
-Fy = zeros(length(Npatches),1);
-Fz = zeros(length(Npatches),1);
-Ftot = zeros(length(Npatches),3);
+
+
 
 % Normal Vector Matrix:
 % nVectM(:,:,1) = nVX1, nVX2, nVX3, ... (repeated for each row)
@@ -39,6 +41,9 @@ end
 
 k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
 
+
+%{
+% NOT NEEDED! Just need to consider effect of point charge on each patch
 % Patch-to-patch location differences matrix
 % ppld(:,:,1) = x1-x1, x1-x2, x1-x3, ... 
 %               x2-x1, x2-x2, x2-x3, ... xi-xj
@@ -46,10 +51,9 @@ ppld = zeros(Npatches,Npatches,3);
 ppld(:,:,1) = x - x'; ppld(:,:,2) = y - y'; ppld(:,:,3) = z - z';
 rpp = sqrt(ppld(:,:,1).*ppld(:,:,1) + ppld(:,:,2).*ppld(:,:,2) + ...
     ppld(:,:,3).*ppld(:,:,3));
+%}
 
 
-
-A2 = k_bar*eye(Npatches) + dA*k_delta/4/pi*M;
 
 % pCharge-to-patch location differences vector
 % pcpld(:,:) = x1-xpc, y1-ypc, z1-zpc
@@ -63,10 +67,12 @@ rpcp = sqrt(pcpld(:,1).*pcpld(:,1) + pcpld(:,2).*pcpld(:,2) + ...
 % nVect 
 % nvx(i,:) = nvx_i, nvy_i, nvz_i (Repeat for each row i)
 
-% Pcharge-to-patch dot product matrix
-Mpc = diag(pcpld*nVect')./(rpcp.^3);
-%Mpc = 
-Mpc(isnan(Mpc) | isinf(Mpc)) = 0;
+Fx = pcpld(:,1)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma*dA;
+Fy = pcpld(:,2)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma*dA;
+Fz = pcpld(:,3)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma*dA;
 
-b2 = ((1-k_bar)*eye(Npatches) - k_delta*dA/4/pi*M)*sigma_f - k_delta/4/pi*pcharge*Mpc;
-sigma_b2 = A2\b2;
+Ftot = [Fx,Fy,Fz];
+
+
+
+end

@@ -1,4 +1,4 @@
-function [U_pCharge_Norm,U_tot_Norm,netCharge] = F_getForces_Matrix(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0)
+function [Ftot,Fx,Fy,Fz] = F_getForces_Matrix(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0)
 % PROVIDES VECTOR OF FORCES ACTING ON EACH PATCH OF THE SPHERES
 %{   
     Given:
@@ -15,51 +15,58 @@ function [U_pCharge_Norm,U_tot_Norm,netCharge] = F_getForces_Matrix(R,x,y,z,nVec
     sigma_b............... vector of patch bound charge surface densities
     b..................... vector of known charge (A*sigma_b = b). See Barrios and Luijten 2014, Journ. of Chem Phys. 
     
+
+Recall: F = qE = 1/4/pi/epsilon_0*q1*q2*r/(r^3)
 %}
+
 Npatches = length(x);
 dA = 4*pi*(R^2)/Npatches;
+A2 = zeros(Npatches);
 
-U_tot_patches = 0;
-U_tot_pcharge = 0;
+Fx = zeros(length(Npatches),1);
+Fy = zeros(length(Npatches),1);
+Fz = zeros(length(Npatches),1);
+Ftot = zeros(length(Npatches),3);
 
-k_tilda = k_obj/k_air; k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
-
-for i = 1:Npatches
-% Patch-patch contribution
-for j = 1:Npatches
-    if (i~=j)
-    dx = x(i)-x(j); dy = y(i)-y(j); dz = z(i)-z(j);
-    dr = sqrt(dx^2 + dy^2 + dz^2);
-    U_tot_patches = U_tot_patches + (sigma(i)*(dA^2))/(dr);
-    end
-end
-% Pcharge-patch contribution
-    dx_pc = x(i)-x_pc;  dy_pc = y(i)-y_pc; dz_pc = z(i)-z_pc;
-    dr_pc = sqrt(dx_pc^2 + dy_pc^2 + dz_pc^2);
-    U_tot_patches = U_tot_patches + sigma(i)*dA*pcharge/(dr_pc);
+% Normal Vector Matrix:
+% nVectM(:,:,1) = nVX1, nVX2, nVX3, ... (repeated for each row)
+% nVectM(:,;,2) = nVY1, nVY2, nVY3, ... (repeated for each row)
+% etc.
+nVectM = zeros(Npatches, Npatches,3);
+for i = 1:3
+nVectM(:,:,i) = repmat(nVect(:,i),1,Npatches);
 end
 
-% Patch-pcharge contribution
-for i = 1:Npatches
-    dx_pc = x_pc-x(i);  dy_pc = y_pc-y(i); dz_pc = z_pc-z(i);
-    dr_pc = sqrt(dx_pc^2 + dy_pc^2 + dz_pc^2);
-    U_tot_pcharge = U_tot_pcharge + sigma(i)*dA*pcharge/(dr_pc);
-end
+k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
 
-U_tot = 0.5*(1/4/pi/epsilon_0)*(U_tot_patches + U_tot_pcharge);
-U0 = (pcharge^2)/epsilon_0/k_air/R;
-U_tot_Norm = U_tot/U0;
+% Patch-to-patch location differences matrix
+% ppld(:,:,1) = x1-x1, x1-x2, x1-x3, ... 
+%               x2-x1, x2-x2, x2-x3, ... xi-xj
+ppld = zeros(Npatches,Npatches,3); 
+ppld(:,:,1) = x - x'; ppld(:,:,2) = y - y'; ppld(:,:,3) = z - z';
+rpp = sqrt(ppld(:,:,1).*ppld(:,:,1) + ppld(:,:,2).*ppld(:,:,2) + ...
+    ppld(:,:,3).*ppld(:,:,3));
 
-U_pCharge_Norm =  (0.5/4/pi/epsilon_0) * U_tot_pcharge / U0;
-netCharge = sum(sigma);
 
-%{
-fprintf('RESULTS:\n')
-fprintf('k_tilda: %.5f\n', k_tilda);
-fprintf('Surface Distance: %f\n', surfDist);
-fprintf('Normalized PE: %f\n', U_tot_Norm);
-fprintf('Net Charge: %f\n\n\n', netCharge);
-%}
 
-end
+A2 = k_bar*eye(Npatches) + dA*k_delta/4/pi*M;
 
+% pCharge-to-patch location differences vector
+% pcpld(:,:) = x1-xpc, y1-ypc, z1-zpc
+%              x2-xpc, y2-ypc, z2-zpc
+%              etc.
+pcpld = zeros(Npatches,3);
+pcpld(:,1) = x-x_pc; pcpld(:,2) = y-y_pc; pcpld(:,3) = z-z_pc;
+rpcp = sqrt(pcpld(:,1).*pcpld(:,1) + pcpld(:,2).*pcpld(:,2) + ...
+    pcpld(:,3).*pcpld(:,3));
+
+% nVect 
+% nvx(i,:) = nvx_i, nvy_i, nvz_i (Repeat for each row i)
+
+% Pcharge-to-patch dot product matrix
+Mpc = diag(pcpld*nVect')./(rpcp.^3);
+%Mpc = 
+Mpc(isnan(Mpc) | isinf(Mpc)) = 0;
+
+b2 = ((1-k_bar)*eye(Npatches) - k_delta*dA/4/pi*M)*sigma_f - k_delta/4/pi*pcharge*Mpc;
+sigma_b2 = A2\b2;

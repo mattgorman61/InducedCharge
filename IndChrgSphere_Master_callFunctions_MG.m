@@ -7,7 +7,8 @@ fprintf('INDUCED CHARGE ON A SPHERE\n\n');
 % Add Function Folder to Current Path
 currFolder = pwd;
 % fprintf('%s',currFolder);
-path = strcat(currFolder,'\Functions');
+path1 = strcat(currFolder,'\Functions');
+path2 = strcat(currFolder,'\Functions\Plots');
 addpath (path);
 
 % Logicals

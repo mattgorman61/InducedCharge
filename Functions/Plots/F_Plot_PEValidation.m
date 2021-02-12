@@ -1,11 +1,13 @@
 function [finished] = F_Plot_PEValidation(R,x,y,z,nVect,y_pc,z_pc,pcharge,sigma_f,epsilon_0)
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+% PLOTS SIMULATION RESULTS AGAINST ANALYTICAL RESULTS
+%   Analytical Results from Barros and Luijten 2014, Phys. Rev. Letters
 
-currFolder = pwd;
-% fprintf('%s',currFolder);
-path = strcat(currFolder,'\Functions');
-addpath (path);
+
+currDir = pwd;
+%fprintf('%s',currDir);
+idcs   = strfind(currDir,'\');
+newdir = currDir(1:idcs(end)-1);
+addpath (newdir);
 
 PCx_vect = [1.05, 1.075, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45, 1.5];
 R_vect = PCx_vect - 1;
@@ -84,12 +86,13 @@ U_vect_Norm_kt0p1 = [ 0.104330, 0.037109, 0.018965, 0.011265, 0.007305]; Net_cha
 U_vect_Norm_kt0p4 = [0.056513, 0.020443, 0.010555, 0.006314, 0.004115]; Net_charge_kt0p4 = [-0.167049, -0.011802, -0.009907, -0.008604, -0.007493];
 U_vect_Norm_kt2p5  = [-0.061684, -0.023304, -0.012360, -0.007533, -0.004979]; Net_charge_kt2p5 = [0.413501, 0.035193, 0.029456, 0.025395, 0.021982];
 U_vect_Norm_kt10 = [-0.123970, -0.047868, -0.025782, -0.015885, -0.010582]; Net_charge_kt10 = [2.272911, 0.212290, 0.177345, 0.152331, 0.131456];
-%}
+
 
 % XR Result: k_med = 0.1, k_obj = 1, x_pc = 1.5R 
 % Computed normalized energy is: 0.007214
 % Net charge is: 0.073093
 
+%}
 
 
 

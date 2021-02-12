@@ -7,9 +7,9 @@ fprintf('INDUCED CHARGE ON A SPHERE\n\n');
 % Add Function Folder to Current Path
 currFolder = pwd;
 % fprintf('%s',currFolder);
-path1 = strcat(currFolder,'\Functions');
-path2 = strcat(currFolder,'\Functions\Plots');
-addpath (path);
+path1 = strcat(currFolder,'\Functions');        addpath(path1);
+path2 = strcat(currFolder,'\Functions\Plots');  addpath(path2);
+
 
 % Logicals
 lshowNVects = false;
@@ -117,5 +117,10 @@ end
 if(lshowPEResults)
     lPlotPEValid = F_Plot_PEValidation(R,x,y,z,nVect,y_pc,z_pc,pcharge,sigma_f,epsilon_0 );
 end
+
+%% Electrostatic Force Calculation
+
+[Ftot,Fx,Fy,Fz] = F_getForces_Matrix(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0)
+
 
 

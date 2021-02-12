@@ -120,7 +120,10 @@ end
 
 %% Electrostatic Force Calculation
 
-[Ftot,Fx,Fy,Fz] = F_getForces_Matrix(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0)
+[Ftot,Fx,Fy,Fz,F0] = F_getForces_Matrix(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0);
+
+FtotNorm = Ftot/F0;
+Fnet = sum(FtotNorm);
 
 
 

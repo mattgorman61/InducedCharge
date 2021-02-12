@@ -2,7 +2,7 @@ function [finished] = F_Plot_PEValidation(R,x,y,z,nVect,y_pc,z_pc,pcharge,sigma_
 % PLOTS SIMULATION RESULTS AGAINST ANALYTICAL RESULTS
 %   Analytical Results from Barros and Luijten 2014, Phys. Rev. Letters
 
-
+% Add Functions Folder to the path
 currDir = pwd;
 %fprintf('%s',currDir);
 idcs   = strfind(currDir,'\');

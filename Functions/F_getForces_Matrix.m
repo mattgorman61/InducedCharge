@@ -1,4 +1,4 @@
-function [Ftot,Fx,Fy,Fz,F0] = F_getForces_Matrix(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0)
+function [Fnet,Fx,Fy,Fz,F0] = F_getForces_Matrix(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0)
 % PROVIDES VECTOR OF FORCES ACTING ON EACH PATCH OF THE SPHERES
 %{   
     Given:
@@ -26,7 +26,6 @@ Recall: F = qE = 1/4/pi/epsilon_0*q1*q2*r/(r^3)
 
 Npatches = length(x);
 dA = 4*pi*(R^2)/Npatches;
-
 
 
 % Normal Vector Matrix:
@@ -70,7 +69,7 @@ Fx = pcpld(:,1)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma*dA;
 Fy = pcpld(:,2)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma*dA;
 Fz = pcpld(:,3)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma*dA;
 
-Ftot = [Fx,Fy,Fz];
+Fnet = [sum(Fx),sum(Fy),sum(Fz)];
 
 F0 = (pcharge^2)/16/pi/epsilon_0/(R^2);
 

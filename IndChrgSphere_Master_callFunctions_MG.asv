@@ -12,11 +12,9 @@ path2 = strcat(currFolder,'\Functions\Plots');  addpath(path2);
 
 
 % Logicals
-lshowNVects = true;
+lshowNVects = false;
 lshowSurfaceCharge = true;
-lshowPEResults = false;
-lshowForceResults = true;
-
+lshowPEResults = true;
 
 % Sphere and Medium Parameters
 R = 1;
@@ -66,8 +64,15 @@ nVect(:,1) = x/R; nVect(:,2) = y/R; nVect(:,3) = z/R;
 
 % Plot Sphere with Normal Vectors
 if(lshowNVects)
-    figure();
-    F_Plot_NormVectors(R,x,y,z,nVect);
+    fig1 = figure(1);
+    scatter3(x,y,z,'filled','r');
+    hold on;
+    quiver3(x,y,z,nVect(:,1),nVect(:,2),nVect(:,3),3,'c');
+    xlim([-2*R, 2*R]); ylim([-2*R, 2*R]); zlim([-2*R, 2*R]);
+    axis square; 
+    % tit1 = title('Sphere Normal Vectors'); tit1.FontName = 'Times New Roman';
+    % tit1.FontSize = 12;
+    set(gca,'LineWidth',1.5); set(gcf,'Position',[100,400,500,400]);
 end
 
 %% CALL FUNCTIONS
@@ -83,9 +88,6 @@ diffB = b2-b
 sigma = sigma_b + sigma_f;
 
 if(lshowSurfaceCharge)
-    figure();
-    F_Plot_sigmaB(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0);
-    %{
     fig2 = figure(2);
     scatter3(x,y,z,12,sigma_b,'filled');
     hold on; 
@@ -97,7 +99,6 @@ if(lshowSurfaceCharge)
     tit2.FontName = 'Times New Roman';
     set(gca,'LineWidth',1.5); set(gcf,'Position',[100,100,500,400]);
     view(35,20);
-    %}
 end
 
 
@@ -114,15 +115,12 @@ end
 %}
 
 if(lshowPEResults)
-    figure();
     lPlotPEValid = F_Plot_PEValidation(R,x,y,z,nVect,y_pc,z_pc,pcharge,sigma_f,epsilon_0 );
 end
 
 %% Electrostatic Force Calculation
 
-if(lshowForceResults)
-    figure();
-    F_Plot_ForceVectors(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_b,sigma_f,k_air,k_obj,epsilon_0);
-end
+F_Plot_ForceVectors(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0);
+
 
 

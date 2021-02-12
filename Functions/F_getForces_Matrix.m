@@ -16,7 +16,6 @@ function [U_pCharge_Norm,U_tot_Norm,netCharge] = F_getForces_Matrix(R,x,y,z,nVec
     b..................... vector of known charge (A*sigma_b = b). See Barrios and Luijten 2014, Journ. of Chem Phys. 
     
 %}
-
 Npatches = length(x);
 dA = 4*pi*(R^2)/Npatches;
 

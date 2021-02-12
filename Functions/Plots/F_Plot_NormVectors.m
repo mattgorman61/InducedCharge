@@ -13,7 +13,10 @@ addpath (newdir);
 
 scatter3(x,y,z,'filled','k');
 hold on;
+
+
 quiver3(x,y,z,nVect(:,1),nVect(:,2),nVect(:,3),3,'r');
+
 xlim([-2*R, 2*R]); ylim([-2*R, 2*R]); zlim([-2*R, 2*R]);
 axis square; 
 tit1 = title('Normal Vectors'); tit1.FontName = 'Times New Roman';

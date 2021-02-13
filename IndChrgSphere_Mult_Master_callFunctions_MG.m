@@ -12,19 +12,31 @@ path2 = strcat(currFolder,'\Functions\Plots');  addpath(path2);
 
 
 % Logicals
-lshowNVects = false;
+lshowNVects = true;
 lshowSurfaceCharge = true;
-lshowPEResults = true;
-lshowForceResults = true;
+lshowPEResults = false; %  N/A for multiple spheres
+lshowForceResults = false;
 
 
 % Sphere and Medium Parameters
-R = 1;
+R0 = 1;
+R = [R0,R0];
 NpatchesSph = 1000; % Number of patches per sphere
-dA = 4*pi*(R^2)/NpatchesSph;
-numSpheres = 1; 
+numSpheres = 2; 
 Npatches = numSpheres*NpatchesSph;
-dxs = [0,0,0]; dys = [0, 2.5*R, 5*R]; dzs = [0,0,0];
+
+dA = zeros(Npatches,1);
+for n = 1:numSpheres
+for i = 1:NpatchesSph
+    dA(i+(n-1)*NpatchesSph) = 4*pi*(R(n)^2)/NpatchesSph;
+end
+end
+
+% dA Matrix:
+% dAmat(i) = dA(1), dA(1), ... <Npatches>
+dAmat = repmat(dA,1,Npatches);
+
+dxs = [0,0,0]; dys = [0, 3*R0, 5*R0]; dzs = [0,0,0];
 
 sigma_f = zeros(Npatches,1); % Neglecting any free charges (perfect insulator?)
 k_obj = 1;
@@ -33,15 +45,17 @@ k_tilda = k_obj/k_air; k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
 %epsilon_0 = 8.85*10^(-12);
 epsilon_0 = 1;
 
-% External E-Field - CODE IS WRONG
+%{
+% External E-Field NEED TO INCLUDE
 Ext_EField_x = 10;
 Ext_EField_y = 0;
 Ext_EField_z = 0;
+%}
 
 % Point Charge Parameters
-x_pcs = [1.5*R];
+x_pcs = [1.5*R0];
 surfDist = (x_pcs-R)/R;
-y_pcs = [0];
+y_pcs = [1.5*R0];
 z_pcs = [0];
 pcharge = [0];
 
@@ -49,40 +63,45 @@ pcharge = [0];
 
 %% Discretize Spherical Surface
 
-x = zeros(length(Npatches),1);
-y = zeros(length(Npatches),1);
-z = zeros(length(Npatches),1);
+x = zeros(Npatches,1)';
+y = zeros(Npatches,1)';
+z = zeros(Npatches,1)';
+
+% Normal Vector:
+% nVect(i,:) = nvx_i, nvy_i, nvz_i    
+nVect = zeros(Npatches,3); % Normal Vectors
 
 % Fibonacci method
 gRat = (sqrt(5.0)+1.0)/2.0; % Golden Ratio
 gAng = (2.0 - gRat)*(2.0*pi);
 for n = 1:numSpheres
 for i = 1:NpatchesSph
-    lat = asin(-1.0+2.0*double(i)/(Npatches+1));
+    lat = asin(-1.0+2.0*double(i)/(NpatchesSph+1));
     lon = gAng*i;
-    x(i) = R*cos(lon)*cos(lat) + dxs(n);
-    y(i) = R*sin(lon)*cos(lat) + dys(n);
-    z(i) = R*sin(lat) + dzs(n);
+    
+    x(i+(n-1)*NpatchesSph) = R(n)*cos(lon)*cos(lat) + dxs(n);
+    y(i+(n-1)*NpatchesSph) = R(n)*sin(lon)*cos(lat) + dys(n);
+    z(i+(n-1)*NpatchesSph) = R(n)*sin(lat) + dzs(n);
+    
+    % Normal Vector:
+    % nVect(i,:) = nvx_i, nvy_i, nvz_i
+    nVect(i+(n-1)*NpatchesSph,1) = (x(i+(n-1)*NpatchesSph)-dxs(n))/R(n); 
+    nVect(i+(n-1)*NpatchesSph,2) = (y(i+(n-1)*NpatchesSph)-dys(n))/R(n); 
+    nVect(i+(n-1)*NpatchesSph,3) = (z(i+(n-1)*NpatchesSph)-dzs(n))/R(n);
 end
 end
 
 x=x'; y=y'; z=z';
 
-% Normal Vector:
-% nVect(i,:) = nvx_i, nvy_i, nvz_i
-nVect = zeros(Npatches,3); % Normal Vectors
-nVect(:,1) = x/R; nVect(:,2) = y/R; nVect(:,3) = z/R;
-
 
 % Plot Sphere with Normal Vectors
 if(lshowNVects)
     figure();
-    F_Plot_NormVectors(R,x,y,z,nVect);
+    F_Plot_NormVectors(R0,x,y,z,nVect);
 end
 
 %% CALL FUNCTIONS
-[sigma_b,b] = F_getSigmaB_Loops(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj);
-[sigma_b2,b2] = F_getSigmaB_Matrix(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj);
+[sigma_b,b] = F_getSigmaB_Mult_Matrix(numSpheres,NpatchesSph,R,dA,dAmat,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj);
 
 %{
 %Check if sigma_b result is the same...

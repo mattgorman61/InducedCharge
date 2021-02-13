@@ -12,19 +12,27 @@ path2 = strcat(currFolder,'\Functions\Plots');  addpath(path2);
 
 
 % Logicals
-lshowNVects = false;
+lshowNVects = true;
 lshowSurfaceCharge = true;
-lshowPEResults = true;
-lshowForceResults = true;
+lshowPEResults = false;
+lshowForceResults = false;
 
 
 % Sphere and Medium Parameters
-R = 1;
+R0 = 1;
+R = [R0,1.5*R0];
 NpatchesSph = 1000; % Number of patches per sphere
-dA = 4*pi*(R^2)/NpatchesSph;
 numSpheres = 1; 
 Npatches = numSpheres*NpatchesSph;
-dxs = [0,0,0]; dys = [0, 2.5*R, 5*R]; dzs = [0,0,0];
+
+dA = zeros(Npatches,1);
+for n = 1:numSpheres
+for i = 1:NpatchesSph
+    dA(i+n*NpatchesSph) = 4*pi*(R(n)^2)/NpatchesSph;
+end
+end
+
+dxs = [0,0,0]; dys = [0, 2.5*R0, 5*R0]; dzs = [0,0,0];
 
 sigma_f = zeros(Npatches,1); % Neglecting any free charges (perfect insulator?)
 k_obj = 1;
@@ -33,10 +41,12 @@ k_tilda = k_obj/k_air; k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
 %epsilon_0 = 8.85*10^(-12);
 epsilon_0 = 1;
 
-% External E-Field - CODE IS WRONG
+%{
+% External E-Field NEED TO INCLUDE
 Ext_EField_x = 10;
 Ext_EField_y = 0;
 Ext_EField_z = 0;
+%}
 
 % Point Charge Parameters
 x_pcs = [1.5*R];
@@ -49,9 +59,13 @@ pcharge = [0];
 
 %% Discretize Spherical Surface
 
-x = zeros(length(Npatches),1);
-y = zeros(length(Npatches),1);
-z = zeros(length(Npatches),1);
+x = zeros(Npatches,1);
+y = zeros(Npatches,1);
+z = zeros(len,1);
+
+% Normal Vector:
+% nVect(i,:) = nvx_i, nvy_i, nvz_i    
+nVect = zeros(Npatches,3); % Normal Vectors
 
 % Fibonacci method
 gRat = (sqrt(5.0)+1.0)/2.0; % Golden Ratio
@@ -60,18 +74,19 @@ for n = 1:numSpheres
 for i = 1:NpatchesSph
     lat = asin(-1.0+2.0*double(i)/(Npatches+1));
     lon = gAng*i;
-    x(i) = R*cos(lon)*cos(lat) + dxs(n);
-    y(i) = R*sin(lon)*cos(lat) + dys(n);
-    z(i) = R*sin(lat) + dzs(n);
+    x(i) = R(n)*cos(lon)*cos(lat) + dxs(n);
+    y(i) = R(n)*sin(lon)*cos(lat) + dys(n);
+    z(i) = R(n)*sin(lat) + dzs(n);
+    
+    % Normal Vector:
+    % nVect(i,:) = nvx_i, nvy_i, nvz_i
+    nVect(i + n*NpatchesSph,1) = (x(i)-dxs(n))/R(n); 
+    nVect(i + n*NpatchesSph,2) = (y(i)-dys(n))/R(n); 
+    nVect(i + n*NpatchesSph,3) = (z(i)-dzs(n))/R(n);
 end
 end
 
 x=x'; y=y'; z=z';
-
-% Normal Vector:
-% nVect(i,:) = nvx_i, nvy_i, nvz_i
-nVect = zeros(Npatches,3); % Normal Vectors
-nVect(:,1) = x/R; nVect(:,2) = y/R; nVect(:,3) = z/R;
 
 
 % Plot Sphere with Normal Vectors

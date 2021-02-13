@@ -14,9 +14,15 @@ addpath (newdir);
 scatter3(x,y,z,12,sigma_b,'filled');
 hold on; 
 scatter3(x_pc,y_pc,z_pc,12,'filled','k');
-xlim([-2*R, 2*R]); ylim([-2*R, 2*R]); zlim([-2*R, 2*R]);
+%xlim([-2*R, 2*R]); ylim([-2*R, 2*R]); zlim([-2*R, 2*R]);
+
+%{
+    Custom ColorMap:
+
+%}
+
 colorbar;
-axis square;    
+axis equal;    
 tit2 = title('Surface Bound Charge'); tit2.FontSize = 12; 
 tit2.FontName = 'Times New Roman';
 %set(gca,'LineWidth',1.5); set(gcf,'Position',[100,100,500,400]);

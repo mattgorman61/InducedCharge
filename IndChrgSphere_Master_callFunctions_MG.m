@@ -41,9 +41,9 @@ pcharge = -1;
 
 %% Discretize Spherical Surface
 
-x = zeros(length(Npatches),1);
-y = zeros(length(Npatches),1);
-z = zeros(length(Npatches),1);
+x = zeros(Npatches,1);
+y = zeros(Npatches,1);
+z = zeros(Npatches,1);
 
 % Fibonacci method
 gRat = (sqrt(5.0)+1.0)/2.0; % Golden Ratio

@@ -11,6 +11,7 @@ path1 = strcat(currFolder,'\Functions');        addpath(path1);
 path2 = strcat(currFolder,'\Functions\Plots');  addpath(path2);
 
 
+
 % Logicals
 lshowNVects = true;
 lshowSurfaceCharge = true;

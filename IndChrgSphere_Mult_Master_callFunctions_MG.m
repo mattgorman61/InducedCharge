@@ -58,7 +58,7 @@ x_pcs = [1.5*R0];
 surfDist = (x_pcs-R)/R;
 y_pcs = [1.5*R0];
 z_pcs = [0];
-pcharge = [0];
+pcharge = [-1];
 
 
 

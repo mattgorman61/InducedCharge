@@ -18,13 +18,13 @@ lshowSurfaceCharge = true;
 lshowPEResults = false; %  N/A for multiple spheres
 lshowForceResults = false;
 
-lpCharge = true;
+lpCharge = false;
 lEField = true;
 
 
 % Sphere and Medium Parameters
 R0 = 1;
-R = [R0,R0];
+R = [R0,0.5*R0];
 NpatchesSph = 1000; % Number of patches per sphere
 numSpheres = 2; 
 Npatches = numSpheres*NpatchesSph;
@@ -52,9 +52,9 @@ epsilon_0 = 1;
 
 %%{
 % External E-Field NEED TO INCLUDE
-Ext_EField_x = 0;
-Ext_EField_y = 0;
-Ext_EField_z = 0;
+Ext_EField_x = 10;
+Ext_EField_y = 10;
+Ext_EField_z = 10;
 %}
 
 % Point Charge Parameters
@@ -62,7 +62,7 @@ x_pcs = [1.5*R0];
 y_pcs = [1.5*R0];
 z_pcs = [0];
 %surfDists = sqrt((x_pcs-dxs).^2 + (y_pcs-dys).^2 + (z_pcs-dzs).^2) /R;
-pcharge = [-100];
+pcharge = [0];
 
 % EVENTUALLY WANT TO MAKE CODE ABLE TO HANDLE ANY NUMBER OF POINT CHARGES
 
@@ -124,7 +124,7 @@ sigma = sigma_b + sigma_f;
 
 if(lshowSurfaceCharge)
     figure();
-    F_Plot_sigmaB(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma,k_air,k_obj,epsilon_0);
+    F_Plot_sigmaB(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_b,k_air,k_obj,epsilon_0,lpCharge,lEField,Ext_EField_x,Ext_EField_y,Ext_EField_z);
     %{
     fig2 = figure(2);
     scatter3(x,y,z,12,sigma_b,'filled');

@@ -1,4 +1,4 @@
-function [sigma_b2,b2] = F_getSigmaB_Matrix(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_f,k_air,k_obj)
+function [sigma_b2,b2] = F_getSigmaB_Matrix(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z)
 % PROVIDES VECTOR OF BOUND CHARGE SURFACE DENSITIES FOR EACH PATCH
 %{   
     Given:
@@ -18,8 +18,8 @@ function [sigma_b2,b2] = F_getSigmaB_Matrix(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge
 %}
 
 Npatches = length(x);
-dA = 4*pi*(R^2)/Npatches;
-A2 = zeros(Npatches);
+dA = 4*pi*(R(1)^2)/Npatches;
+%A2 = zeros(Npatches);
 
 % Normal Vector Matrix:
 % nVectM(:,:,1) = nVX1, nVX2, nVX3, ... (repeated for each row)
@@ -64,5 +64,8 @@ Mpc = diag(pcpld*nVect')./(rpcp.^3);
 %Mpc = 
 Mpc(isnan(Mpc) | isinf(Mpc)) = 0;
 
-b2 = ((1-k_bar)*eye(Npatches) - k_delta*dA/4/pi*M)*sigma_f - k_delta/4/pi*pcharge*Mpc;
+b2 = ((1-k_bar)*eye(Npatches) - k_delta*dA/4/pi*M)*sigma_f - k_delta/4/pi*pcharge*Mpc - ...
+    k_delta/4/pi*(Ext_EField_x*nVect(:,1)+ Ext_EField_y*nVect(:,2) + Ext_EField_z*nVect(:,3));
+
+
 sigma_b2 = A2\b2;

@@ -13,7 +13,7 @@ path2 = strcat(currFolder,'\Functions\Plots');  addpath(path2);
 
 
 % Logicals
-lshowNVects = true;
+lshowNVects = false;
 lshowSurfaceCharge = true;
 lshowPEResults = false; %  N/A for multiple spheres
 lshowForceResults = false;
@@ -37,9 +37,10 @@ end
 end
 
 % dA Matrix:
-% dAmat(i) = dA(1), dA(1), ... <Npatches>
-dAmat = repmat(dA,1,Npatches);
+% dAmat(i) = dA(1), dA(2), ... <Npatches>
+dAmat = repmat(dA',Npatches,1);
 
+% Center x,y,z coordinates for each of the spheres
 dxs = [0,0,0]; dys = [0, 3*R0, 5*R0]; dzs = [0,0,0];
 
 sigma_f = zeros(Npatches,1); % Neglecting any free charges (perfect insulator?)
@@ -49,19 +50,21 @@ k_tilda = k_obj/k_air; k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
 %epsilon_0 = 8.85*10^(-12);
 epsilon_0 = 1;
 
-%{
+%%{
 % External E-Field NEED TO INCLUDE
-Ext_EField_x = 10;
+Ext_EField_x = 0;
 Ext_EField_y = 0;
 Ext_EField_z = 0;
 %}
 
 % Point Charge Parameters
 x_pcs = [1.5*R0];
-surfDist = (x_pcs-R)/R;
 y_pcs = [1.5*R0];
 z_pcs = [0];
-pcharge = [-1];
+%surfDists = sqrt((x_pcs-dxs).^2 + (y_pcs-dys).^2 + (z_pcs-dzs).^2) /R;
+pcharge = [-100];
+
+% EVENTUALLY WANT TO MAKE CODE ABLE TO HANDLE ANY NUMBER OF POINT CHARGES
 
 
 
@@ -105,7 +108,11 @@ if(lshowNVects)
 end
 
 %% CALL FUNCTIONS
-[sigma_b,b] = F_getSigmaB_Mult_Matrix(numSpheres,NpatchesSph,R,dA,dAmat,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj);
+%Multiple Spheres:
+[sigma_b,b] = F_getSigmaB_Mult_Matrix(numSpheres,NpatchesSph,R,dA,dAmat,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
+
+%Single Sphere:
+%[sigma_b,b] = F_getSigmaB_Matrix(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
 
 %{
 %Check if sigma_b result is the same...

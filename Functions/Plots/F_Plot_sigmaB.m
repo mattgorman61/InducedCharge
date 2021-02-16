@@ -49,8 +49,9 @@ tit2 = title('Surface Bound Charge'); tit2.FontSize = 12;
 tit2.FontName = 'Times New Roman';
 %set(gca,'LineWidth',1.5); set(gcf,'Position',[100,100,500,400]);
 view(35,20);
-
-    
+xlabel('x','FontName','Times New Roman');
+ylabel('y','FontName','Times New Roman');
+zlabel('z','FontName','Times New Roman');
     
 finished = true;
 

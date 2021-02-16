@@ -1,4 +1,4 @@
-function [sigma_b2,b2] = F_getSigmaB_Mult_Matrix(numSpheres,NpatchesSph,R,dA,dAmat,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_f,k_air,k_obj)
+function [sigma_b2,b2] = F_getSigmaB_Mult_Matrix(numSpheres,NpatchesSph,R,dA,dAmat,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z)
 % PROVIDES VECTOR OF BOUND CHARGE SURFACE DENSITIES FOR EACH PATCH
 %{   
     Given:
@@ -43,14 +43,14 @@ M = (ppld(:,:,1).*nVectM(:,:,1) + ppld(:,:,2).*nVectM(:,:,2) + ...
     ppld(:,:,3).*nVectM(:,:,3))./(rpp.^3);
 M(isnan(M) | isinf(M)) = 0;
 
-A2 = k_bar*eye(Npatches) + dAmat.*k_delta/4/pi*M;
+A2 = k_bar*eye(Npatches) + k_delta/4/pi*dAmat.*M;
 
 % pCharge-to-patch location differences vector
 % pcpld(:,:) = x1-xpc, y1-ypc, z1-zpc
 %              x2-xpc, y2-ypc, z2-zpc
 %              etc.
 pcpld = zeros(Npatches,3);
-pcpld(:,1) = x-x_pc; pcpld(:,2) = y-y_pc; pcpld(:,3) = z-z_pc;
+pcpld(:,1) = x-x_pcs; pcpld(:,2) = y-y_pcs; pcpld(:,3) = z-z_pcs;
 rpcp = sqrt(pcpld(:,1).*pcpld(:,1) + pcpld(:,2).*pcpld(:,2) + ...
     pcpld(:,3).*pcpld(:,3));
 
@@ -62,5 +62,8 @@ Mpc = diag(pcpld*nVect')./(rpcp.^3);
 %Mpc = 
 Mpc(isnan(Mpc) | isinf(Mpc)) = 0;
 
-b2 = ((1-k_bar)*eye(Npatches) - k_delta/4/pi*M)*sigma_f.*dA - k_delta/4/pi*pcharge*Mpc;
+b2 = ((1-k_bar)*eye(Npatches) - k_delta/4/pi*dAmat.*M)*sigma_f - k_delta/4/pi*pcharge*Mpc - ...
+    k_delta/4/pi*(Ext_EField_x.*nVect(:,1)+ Ext_EField_y.*nVect(:,2) + Ext_EField_z.*nVect(:,3));
+
+
 sigma_b2 = A2\b2;

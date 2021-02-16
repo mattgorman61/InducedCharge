@@ -18,6 +18,9 @@ lshowSurfaceCharge = true;
 lshowPEResults = false; %  N/A for multiple spheres
 lshowForceResults = false;
 
+lpCharge = true;
+lEField = true;
+
 
 % Sphere and Medium Parameters
 R0 = 1;

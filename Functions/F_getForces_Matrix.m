@@ -41,7 +41,7 @@ k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
 
 
 %{
-% NOT NEEDED! Just need to consider effect of point charge on each patch
+% NOT NEEDED! For a single sphere, just need to consider effect of point charge on each patch
 % Patch-to-patch location differences matrix
 % ppld(:,:,1) = x1-x1, x1-x2, x1-x3, ... 
 %               x2-x1, x2-x2, x2-x3, ... xi-xj

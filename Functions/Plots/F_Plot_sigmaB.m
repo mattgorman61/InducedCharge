@@ -62,9 +62,19 @@ if(lEField)
     hold on;
     quiver3(xx,yy,zz, ... 
        Ext_EField_x*ones(numDiv,numDiv,numDiv),Ext_EField_y*ones(numDiv,numDiv,numDiv),Ext_EField_z*ones(numDiv,numDiv,numDiv), ...
-       0.5,'k');
+       0.5,'g');
     %quiver3(0,0,0,1,1,1,0.25,'k','LineWidth',2);
     axis equal;
+end
+
+if(lpCharge)
+    if(lEField)
+        legend('Surface Charge Density','Point Charge','External E-Field','Location','south');
+    else
+        legend('Surface Charge Density','Point Charge','Location','south');
+    end
+else
+    legend('Surface Charge Density');
 end
 
 

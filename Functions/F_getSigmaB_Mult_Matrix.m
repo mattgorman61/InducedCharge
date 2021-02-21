@@ -1,4 +1,4 @@
-function [sigma_b2,b2] = F_getSigmaB_Mult_Matrix(numSpheres,NpatchesSph,R,dA,dAmat,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z)
+function [sigma_b2,b2] = F_getSigmaB_Mult_Matrix(dAmat,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z)
 % PROVIDES VECTOR OF BOUND CHARGE SURFACE DENSITIES FOR EACH PATCH
 %{   
     Given:

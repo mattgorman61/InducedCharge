@@ -1,4 +1,4 @@
-function [finished] = F_Plot_sigmaB(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_b,k_air,k_obj,epsilon_0,lpCharge,lEField,Ext_EField_x,Ext_EField_y,Ext_EField_z)
+function [finished] = F_Plot_sigmaB(x,y,z,x_pcs,y_pcs,z_pcs,sigma_b,lpCharge,lEField,Ext_EField_x,Ext_EField_y,Ext_EField_z)
 % DISPLAYS SIGMA_B, BOUND SURFACE CHARGE DENSITY, FOR EACH PATCH
 %   
 
@@ -58,7 +58,7 @@ zlabel('z','FontName','Times New Roman');
 
 if(lEField)
     numDiv = 6;
-    [xx,yy,zz] = meshgrid(linspace(-2,2,numDiv),linspace(-1,5,numDiv),linspace(-2,2,numDiv));
+    [xx,yy,zz] = meshgrid(linspace(min(x),max(x),numDiv),linspace(min(y),max(y),numDiv),linspace(min(z),max(z),numDiv));
     hold on;
     quiver3(xx,yy,zz, ... 
        Ext_EField_x*ones(numDiv,numDiv,numDiv),Ext_EField_y*ones(numDiv,numDiv,numDiv),Ext_EField_z*ones(numDiv,numDiv,numDiv), ...
@@ -74,7 +74,11 @@ if(lpCharge)
         legend('Surface Charge Density','Point Charge','Location','south');
     end
 else
-    legend('Surface Charge Density');
+    if(lEField)
+        legend('Surface Charge Density','External E-Field','Location','south');
+    else
+        legend('Surface Charge Density','Location','south');
+    end
 end
 
 

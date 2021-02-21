@@ -116,7 +116,7 @@ end
 
 %% CALL FUNCTIONS
 %Multiple Spheres:
-[sigma_b,b] = F_getSigmaB_Mult_Matrix(numSpheres,NpatchesSph,R,dA,dAmat,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
+[sigma_b,b] = F_getSigmaB_Mult_Matrix(dAmat,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
 
 %Single Sphere:
 %[sigma_b,b] = F_getSigmaB_Matrix(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
@@ -131,7 +131,7 @@ sigma = sigma_b + sigma_f;
 
 if(lshowSurfaceCharge)
     figure();
-    F_Plot_sigmaB(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_b,k_air,k_obj,epsilon_0,lpCharge,lEField,Ext_EField_x,Ext_EField_y,Ext_EField_z);
+    F_Plot_sigmaB(x,y,z,x_pcs,y_pcs,z_pcs,sigma_b,lpCharge,lEField,Ext_EField_x,Ext_EField_y,Ext_EField_z);
     %{
     fig2 = figure(2);
     scatter3(x,y,z,12,sigma_b,'filled');

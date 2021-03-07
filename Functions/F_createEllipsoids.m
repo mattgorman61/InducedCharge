@@ -18,7 +18,6 @@ Given:
     nVect................. vector of patch bound charge surface densities
     ellID.............. vector of sphereIDs for each patch
 
-
 %}
 
 Npatches = NpatchesEll*NEll;

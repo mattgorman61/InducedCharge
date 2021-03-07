@@ -12,8 +12,9 @@ function [U_pCharge_Norm,U_tot_Norm,netCharge] = F_getPE_Loops(R,x,y,z,nVect,x_p
     k_obj................. dielectric constant of the sphere material
 
     Returns;
-    sigma_b............... vector of patch bound charge surface densities
-    b..................... vector of known charge (A*sigma_b = b). See Barros and Luijten 2014, Journ. of Chem Phys. 
+    U_pCharge_Norm........ potential energy 
+    U_tot_Norm............ potential energy of the entire system (?)
+    netCharge............. sum of charges in the system
     
 %}
 

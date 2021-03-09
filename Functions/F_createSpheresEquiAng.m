@@ -1,4 +1,4 @@
-function [x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheres(R,NpatchesSph,numSpheres,dxs,dys,dzs)
+function [x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheresEquiAng(R,NpatchesSph,numSpheres,dxs,dys,dzs)
 % PROVIDES NORMALIZED POTENTIAL ENERGY OF THE POINT CHARGE SPHERE SYSTEM
 %{   
     Given:
@@ -22,6 +22,13 @@ y = zeros(Npatches,1)';
 z = zeros(Npatches,1)';
 sphereID = zeros(Npatches,1);
 
+numTheta = 40;
+numPhi = NpatchesSph/numTheta;
+theta = linspace(0.01,2*pi-0.01,numTheta);
+phi = linspace(0.01,pi-0.01,numPhi);
+
+%Npatches == (numTheta*numPhi*numSpheres)
+
 dA = zeros(Npatches,1);
 for n = 1:numSpheres
 for i = 1:NpatchesSph
@@ -37,6 +44,7 @@ dAmat = repmat(dA',Npatches,1);
 % nVect(i,:) = nvx_i, nvy_i, nvz_i    
 nVect = zeros(Npatches,3); % Normal Vectors
 
+%{
 % Fibonacci method
 gRat = (sqrt(5.0)+1.0)/2.0; % Golden Ratio
 gAng = (2.0 - gRat)*(2.0*pi);
@@ -77,6 +85,44 @@ end
 end
 
 x=x'; y=y'; z=z';
+%}
+
+
+%% Equal Angle Method
+for n = 1:numSpheres
+for th = 1:length(theta)
+for ph = 1:length(phi)
+    
+    i = (n-1)*NpatchesSph + (th-1)*length(phi) + ph;
+    
+    xx = R*sin(phi(ph))*cos(theta(th));% + dxs(n);
+    yy = R*sin(phi(ph))*sin(theta(th));% + dys(n);
+    zz = R*cos(phi(ph));% + dzs(n);
+    
+    x(i) = xx;
+    y(i) = yy;
+    z(i) = zz;
+    %nVect(i,1) = (x(i)-dxs(n))/R(n); 
+    %nVect(i,2) = (y(i)-dys(n))/R(n); 
+    %nVect(i,3) = (z(i)-dzs(n))/R(n);
+    
+    nVect(i,1) = (xx/R); 
+    nVect(i,2) = (yy/R); 
+    nVect(i,3) = (zz/R);
+    
+end
+end
+end
+%}
+
+%{
+% Length Check:
+length(nVect(:,3))
+length(z)
+%}
+
+x=x'; y=y'; z=z';
+    
 
 end
 

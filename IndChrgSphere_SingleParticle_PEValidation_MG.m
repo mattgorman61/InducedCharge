@@ -13,21 +13,21 @@ path2 = strcat(currFolder,'\Functions\Plots');  addpath(path2);
 
 
 % Logicals
-lshowNVects = false;
+lshowNVects = true;
 lshowSurfaceCharge = true;
-lshowPEResults = false; %  N/A for multiple spheres
+lshowPEResults = true; %  N/A for multiple spheres
 lshowForceResults = false;
 
 lpCharge = true;
-lEField = true;
+lEField = false;
 
 
 % Sphere and Medium Parameters
 R0 = 1;
-R = [R0,0.5*R0];
-%R = R0;
+%R = [R0,0.5*R0];
+R = R0;
 NpatchesSph = 1000; % Number of patches per sphere
-numSpheres = 2; 
+numSpheres = 1; 
 Npatches = numSpheres*NpatchesSph;
 
 %{
@@ -55,7 +55,7 @@ epsilon_0 = 1;
 
 %%{
 % External E-Field NEED TO INCLUDE
-Ext_EField_x = 10;
+Ext_EField_x = 0;
 Ext_EField_y = 0;
 Ext_EField_z = 0;
 %}
@@ -106,13 +106,16 @@ x=x'; y=y'; z=z';
 %}
 
 %% Create Spheres
-[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheres(R,NpatchesSph,numSpheres,dxs,dys,dzs);
+%[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheres(R,NpatchesSph,numSpheres,dxs,dys,dzs);
+
+% Bad Case, Equal Angles. Make NpatchesSph a perfect square
+[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheresEquiAng(R,NpatchesSph,numSpheres,dxs,dys,dzs);
 
 
 % Plot Sphere with Normal Vectors
 if(lshowNVects)
     figure();
-    F_Plot_NormVectors(R0,x,y,z,nVect);
+    F_Plot_NormVectors(R,x,y,z,nVect);
 end
 
 %% CALL FUNCTIONS
@@ -148,8 +151,6 @@ if(lshowSurfaceCharge)
     %}
 end
 
-%sa;lkfja;slkdfsj
-
 
 
 %% Electrostatic PE Calculation
@@ -175,4 +176,4 @@ if(lshowForceResults)
     F_Plot_ForceVectors(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,lpCharge,lEField,sigma_b,sigma_f,k_air,k_obj,epsilon_0);
 end
 
-
+%}

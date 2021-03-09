@@ -12,9 +12,9 @@ path2 = strcat(currFolder,'\Functions\Plots');  addpath(path2);
 
 
 % Logicals
-lshowNVects = true;
+lshowNVects = false;
 lshowSurfaceCharge = true;
-lshowPEResults = false;
+lshowPEResults = true;
 lshowForceResults = true;
 
 

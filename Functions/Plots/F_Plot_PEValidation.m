@@ -1,4 +1,4 @@
-function [finished] = F_Plot_PEValidation(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_f,epsilon_0)
+function [finished] = F_Plot_PEValidation(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_f,epsilon_0,Ext_EField_x,Ext_EField_y,Ext_EField_z)
 % PLOTS SIMULATION RESULTS AGAINST ANALYTICAL RESULTS
 %   Analytical Results from Barros and Luijten 2014, Phys. Rev. Letters
 
@@ -19,7 +19,7 @@ R_vect = PCx_vect - 1;
 k_air = 1; k_obj = 40;
 U_kt40_Norm = zeros(length(PCx_vect),1);
 for i = 1:length(PCx_vect)
-    [sigma_b_i] = F_getSigmaB_Matrix(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_f,k_air,k_obj);
+    [sigma_b_i] = F_getSigmaB_Matrix(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
     sigma_i = sigma_b_i + sigma_f;
     [U_pCharge_Norm_i] = F_getPE_Loops(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_i,k_air,k_obj,epsilon_0);
     U_kt40_Norm(i) = U_pCharge_Norm_i;
@@ -29,7 +29,8 @@ end
 k_air = 1; k_obj = 10;
 U_kt10_Norm = zeros(length(PCx_vect),1);
 for i = 1:length(PCx_vect)
-    [sigma_b_i] = F_getSigmaB_Matrix(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_f,k_air,k_obj);
+    [sigma_b_i] = F_getSigmaB_Matrix(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
+                                     
     sigma_i = sigma_b_i + sigma_f;
     [U_pCharge_Norm_i] = F_getPE_Loops(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_i,k_air,k_obj,epsilon_0);
     U_kt10_Norm(i) = U_pCharge_Norm_i;
@@ -38,7 +39,7 @@ end
 k_air = 1; k_obj = 2.5;
 U_kt2p5_Norm = zeros(length(PCx_vect),1);
 for i = 1:length(PCx_vect)
-    [sigma_b_i] = F_getSigmaB_Matrix(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_f,k_air,k_obj);
+    [sigma_b_i] = F_getSigmaB_Matrix(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
     sigma_i = sigma_b_i + sigma_f;
     [U_pCharge_Norm_i] = F_getPE_Loops(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_i,k_air,k_obj,epsilon_0);
     U_kt2p5_Norm(i) = U_pCharge_Norm_i;
@@ -47,7 +48,7 @@ end
 k_air = 1; k_obj = 0.4;
 U_kt0p4_Norm = zeros(length(PCx_vect),1);
 for i = 1:length(PCx_vect)
-    [sigma_b_i] = F_getSigmaB_Matrix(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_f,k_air,k_obj);
+    [sigma_b_i] = F_getSigmaB_Matrix(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
     sigma_i = sigma_b_i + sigma_f;
     [U_pCharge_Norm_i] = F_getPE_Loops(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_i,k_air,k_obj,epsilon_0);
     U_kt0p4_Norm(i) = U_pCharge_Norm_i;
@@ -56,7 +57,7 @@ end
 k_air = 1; k_obj = 0.1;
 U_kt0p1_Norm = zeros(length(PCx_vect),1);
 for i = 1:length(PCx_vect)
-    [sigma_b_i] = F_getSigmaB_Matrix(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_f,k_air,k_obj);
+    [sigma_b_i] = F_getSigmaB_Matrix(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
     sigma_i = sigma_b_i + sigma_f;
     [U_pCharge_Norm_i] = F_getPE_Loops(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_i,k_air,k_obj,epsilon_0);
     U_kt0p1_Norm(i) = U_pCharge_Norm_i;
@@ -65,7 +66,7 @@ end
 k_air = 1; k_obj = 0.025;
 U_kt0p025_Norm = zeros(length(PCx_vect),1);
 for i = 1:length(PCx_vect)
-    [sigma_b_i] = F_getSigmaB_Matrix(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_f,k_air,k_obj);
+    [sigma_b_i] = F_getSigmaB_Matrix(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
     sigma_i = sigma_b_i + sigma_f;
     [U_pCharge_Norm_i] = F_getPE_Loops(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_i,k_air,k_obj,epsilon_0);
     U_kt0p025_Norm(i) = U_pCharge_Norm_i;
@@ -74,7 +75,7 @@ end
 k_air = 1; k_obj = 0;
 U_kt0_Norm = zeros(length(PCx_vect),1);
 for i = 1:length(PCx_vect)
-    [sigma_b_i] = F_getSigmaB_Matrix(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_f,k_air,k_obj);
+    [sigma_b_i] = F_getSigmaB_Matrix(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
     sigma_i = sigma_b_i + sigma_f;
     [U_pCharge_Norm_i] = F_getPE_Loops(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_i,k_air,k_obj,epsilon_0);
     U_kt0_Norm(i) = U_pCharge_Norm_i;
@@ -137,13 +138,30 @@ end
     
     
     %leg3 = legend(k_tildaVectString);
-    leg3 = legend([k_tildaVectString, '\kappa = 0','\kappa = 0.025','\kappa = 0.1', '\kappa = 0.4', '\kappa = 2.5', '\kappa = 10', '\kappa = 40']);
-    leg3.Location = 'southeast';
-    xlab3 = xlabel('Charge-surface distance (units of sphere radius)');
-    xlab3.FontName = 'Times New Roman';
-    ylab3 = ylabel('Normalized Potential Energy');
-    ylab3.FontName = 'Times New Roman';
-    set(gcf,'position',[600,100,800,700]);
+    %leg3 = legend([k_tildaVectString, '\kappa = 0','\kappa = 0.025','\kappa = 0.1', '\kappa = 0.4', '\kappa = 2.5', '\kappa = 10', '\kappa = 40']);
+    
+xlabel('Charge-surface Distance','fontsize',24,'fontname','Times New Roman');
+%xlabel('Charge-surface Distance','fontsize',24,'fontname','Times New Roman','fontangle','Italic');
+ylabel('Potential Energy','fontsize',24,'fontname','Times New Roman');
+set(gca, 'LineWidth', 2.0 );
+set(gca, 'fontsize', 24.0 );
+set(gca, 'XMinorTick', 'on');
+set(gca, 'Ticklength', [0.02;0.01] );
+set(gca, 'YMinorTick', 'on');
+set(gca, 'Ticklength', [0.02;0.01] );
+set(gca, 'XTick', 0:0.1:0.5 );
+set(gca, 'YTick', -0.4:.1:0.3 );
+
+h = findobj(gca,'Type','line');
+set(h, 'Markersize', 8);
+set(h, 'Linewidth', 2);
+
+leg = legend([k_tildaVectString, '\kappa = 0','\kappa = 0.025','\kappa = 0.1', '\kappa = 0.4', '\kappa = 2.5', '\kappa = 10', '\kappa = 40']);
+set(leg, 'fontsize', 16.0,'fontname','Times New Roman','fontangle','Italic','location','southeast','NumColumns',2);
+%set(leg,'fontname','Times New Roman');
+%set(leg,'fontangle','Italic');
+axis([0 0.55 -0.4 0.3]);
+set(gcf,'position',[0,0,800,600]);
 
 
 finished = true;

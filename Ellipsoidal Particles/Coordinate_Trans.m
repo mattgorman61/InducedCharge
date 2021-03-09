@@ -1,6 +1,38 @@
 clc; clear all; close all;
-% Euler Angle Matrix: Axis Rotation
 
+
+%% Plot Original Ellipse
+%{
+NpatchesEll = 200;
+x = zeros(NpatchesEll,1); y = zeros(NpatchesEll,1); z = zeros(NpatchesEll,1);
+
+n = 1;
+a = 4; b = 1; c = 1;
+gAng = 1/2*(sqrt(5) - 1);
+for i = 1:NpatchesEll
+    ii = i + (n-1)*NpatchesEll;
+    z(ii) = c(n)*((2*i-1)/NpatchesEll - 1);
+    x(ii) = a(n)*sqrt( (2*i-1)/NpatchesEll*(2-(2*i-1)/NpatchesEll))*cos(2*pi*i*gAng);
+    y(ii) = b(n)*sqrt( (2*i-1)/NpatchesEll*(2-(2*i-1)/NpatchesEll))*sin(2*pi*i*gAng);
+    %ellID(ii) = n;
+end
+
+figure();
+scatter3(x,y,z);
+
+[xrot,yrot,zrot] = F_EulRot(x,y,z,pi/4,pi/4,pi/4);
+%[xrot,yrot,zrot] = F_QuatRot(x,y,z,pi/4,pi/4,pi/4);
+hold on;
+scatter3(xrot,yrot,zrot,'filled','r');
+axis equal;
+xlabel('x'); ylabel('y'); zlabel('z');
+
+%}
+
+
+%% Euler Angle Matrix: Axis Rotation
+
+%{
 psi = -pi/4;
 phi = -pi/4;
 theta = pi/4;
@@ -45,7 +77,7 @@ eps1 = cos((phi-psi)/2)*sin(theta/2);
 eps2 = sin((phi-psi)/2)*sin(theta/2);
 eps3 = sin((phi+psi)/2)*cos(theta/2);
 eta = cos((phi+psi)/2)*cos(theta/2);
-%}
+%%}
 
 %Definition from Wikipedia
 %{
@@ -86,29 +118,4 @@ xlabel('x'); ylabel('y'); zlabel('z');
 pos = get(gcf, 'Position');
 set(gcf,'Position',[600,100,pos(3:4)]);
 
-%% Plot Original Ellipse
-NpatchesEll = 200;
-x = zeros(NpatchesEll,1); y = zeros(NpatchesEll,1); z = zeros(NpatchesEll,1);
-
-n = 1;
-a = 4; b = 1; c = 1;
-gAng = 1/2*(sqrt(5) - 1);
-for i = 1:NpatchesEll
-    ii = i + (n-1)*NpatchesEll;
-    z(ii) = c(n)*((2*i-1)/NpatchesEll - 1);
-    x(ii) = a(n)*sqrt( (2*i-1)/NpatchesEll*(2-(2*i-1)/NpatchesEll))*cos(2*pi*i*gAng);
-    y(ii) = b(n)*sqrt( (2*i-1)/NpatchesEll*(2-(2*i-1)/NpatchesEll))*sin(2*pi*i*gAng);
-    %ellID(ii) = n;
-end
-
-figure();
-scatter3(x,y,z);
-
-[xrot,yrot,zrot] = F_EulRot(x,y,z,pi/4,pi/4,pi/4);
-%[xrot,yrot,zrot] = F_QuatRot(x,y,z,pi/4,pi/4,pi/4);
-hold on;
-scatter3(xrot,yrot,zrot,'filled','r');
-axis equal;
-xlabel('x'); ylabel('y'); zlabel('z');
-
-
+%}

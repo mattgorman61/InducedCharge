@@ -1,4 +1,4 @@
-function [x,y,z,dA,dAmat,nVect,ellID,a,b,c,x0,y0,z0,EllPatchData] = F_createEllipsoid(a,b,c,NpatchesEll,NEll,EllPatchData,dx,dy,dz,psi,phi,theta,ellID_in)
+function [x,y,z,dA,dAmat,nVect,ellID,a,b,c,x0,y0,z0,psi,phi,theta,A_Eul,EllPatchData] = F_createEllipsoid(a,b,c,NpatchesEll,NEll,EllPatchData,dx,dy,dz,psi,phi,theta,ellID_in)
 % Creates Geometry for a single ellipsoid
 %{
 
@@ -9,6 +9,14 @@ Given:
     NpatchesEll........... number of patches per sphere (EVENTUALLY SHOULD BE A VECTOR OF DIFFERENT VALUES FOR EACH SPHERE)
     NEll.................. number of ellipsoids
     EllpatchData.......... matrix with Ellipsoid patch data
+    dx.................... x location of the ellipsoid center
+    dy.................... y location of the ellipsoid center
+    dz.................... z location of the ellipsoid center
+    psi................... Euler rotation angle
+    phi................... Euler rotation angle
+    theta................. Euler rotation angle
+    EllID................. EllipseID
+
    
 Returns:
     x..................... vector of x-locations for each patch
@@ -51,8 +59,10 @@ end
 
 % Apply rotation
 for n = 1:NEll
-    [xx,yy,zz] = F_EulRot(x1,y1,z1,psi,phi,theta ); % Rotate the Ellipse
+    [xx,yy,zz,A_Eul_dim3] = F_EulRot(x1,y1,z1,psi,phi,theta ); % Rotate the Ellipse
     x = xx; y = yy; z = zz;
+    A_Eul = [A_Eul_dim3, [0 0 0]']; % Have to use 4x4 Rotation Matrix, where last row = [0 0 0 1].
+    A_Eul = [A_Eul; [0 0 0 1]];
 end
 
 
@@ -110,7 +120,11 @@ EllPatchData((1+(n-1)*NpatchesEll):((n)*NpatchesEll),11) = x0;
 EllPatchData((1+(n-1)*NpatchesEll):((n)*NpatchesEll),12) = y0;
 EllPatchData((1+(n-1)*NpatchesEll):((n)*NpatchesEll),13) = z0;    
 
-EllPatchData((1+(n-1)*NpatchesEll):((n)*NpatchesEll),14) = ellID;
+EllPatchData((1+(n-1)*NpatchesEll):((n)*NpatchesEll),14) = psi;
+EllPatchData((1+(n-1)*NpatchesEll):((n)*NpatchesEll),15) = phi;
+EllPatchData((1+(n-1)*NpatchesEll):((n)*NpatchesEll),16) = theta;
+
+EllPatchData((1+(n-1)*NpatchesEll):((n)*NpatchesEll),17) = ellID;
 
 
 

@@ -3,20 +3,24 @@ clc; clear all; close all;
 %% Create Multiple Ellipsoids
 
 a = [1 1 1]; b = [2 2 2]; c = [1 1 1];
-dxes = [1 3 5]; dyes = [1 3 4]; dzes = [0 0 0];
-psi = [0 pi/4 pi/2]; % Rotation about z-axis
-phi = [0 0 0]; % Rotation about x-axis
-theta = [0 0 0]; % Rotation about y-axis
+dxes = [2.01 0 1]; dyes = [0 0 1]; dzes = [0 0 0];
+psiVect = [0 0 0]; % Rotation about z-axis
+phiVect = [pi/2 0 0]; % Rotation about x-axis
+thetaVect = [0 0 0]; % Rotation about y-axis
 NpatchesEll = 1000; 
-NEll = 3;
+NEll = 2;
 Npatches = NEll*NpatchesEll;
-EllPatchData = zeros(Npatches,14); % X,Y,Z,dA, nVx,nVy,nVz, a,b,c, x0,y0,z0, ellID of each patch
+EllPatchData = zeros(Npatches,17); % X,Y,Z,dA, nVx,nVy,nVz, a,b,c, x0,y0,z0, psi,phi,theta, ellID of each patch
+EulRotMatsData = zeros(4,4,NEll);
 
 tsteps = 100;
 
 for n = 1:NEll
-    [x,y,z,dA,dAmat,nVect,ellID,a1,b1,c1,x0,y0,z0,EllPatchData] = F_createEllipsoid(a(n),b(n),c(n),NpatchesEll,NEll,EllPatchData,dxes(n),dyes(n),dzes(n),psi(n),phi(n),theta(n),n);
+    %[x,y,z,dA,dAmat,nVect,ellID,a1,b1,c1,x0,y0,z0,psi,phi,theta,A_Eul,EllPatchData] = F_createEllipsoid(a(n),b(n),c(n),NpatchesEll,NEll,EllPatchData,dxes(n),dyes(n),dzes(n),psi(n),phi(n),theta(n),n);
+                                                                                                        %a,b,c,NpatchesEll,NEll,EllPatchData,dx,dy,dz,psi,phi,theta,ellID_in
     
+    [x,y,z,dA,dAmat,nVect,ellID,a1,b1,c1,x0,y0,z0,psi,phi,theta,A_Eul,EllPatchData] = F_createEllipsoid(a(n),b(n),c(n),NpatchesEll,NEll,EllPatchData,dxes(n),dyes(n),dzes(n),psiVect(n),phiVect(n),thetaVect(n),n);
+    EulRotMatsData(:,:,n) = A_Eul;
     %{
     EllPatchData((n + (n-1)*NpatchesEll):(n*(1+NpatchesEll)-1),1) = x;
     EllPatchData((n + (n-1)*NpatchesEll):(n*(1+NpatchesEll)-1),2) = y;
@@ -55,19 +59,55 @@ view(45,25);
 xlabel('x'); ylabel('y'); zlabel('z');
 
 %for i=1:tsteps
-collisionList = F_CollideCheckCall(EllPatchData, NEll, NpatchesEll)
+collisionList = F_CollideCheckCall(EllPatchData, NEll, NpatchesEll,EulRotMatsData);
+if(length(collisionList)>0)
+    %annotation('textbox', [0.5, 0.5, 0.25, 0.25], 'string', 'COLLISION DETECTED','FitBoxToText','on','Color','r');
+    annotation('textbox',[0.6 0.5 0 0],'string',{'COLLISION','DETECTED'},'Color','c','FontSize',18);
+end
 %end
+
+EllMat.id = EllPatchData(:,17);
+EllMat.x = EllPatchData(:,1);
+EllMat.y = EllPatchData(:,2);
+EllMat.z = EllPatchData(:,3);
+EllMat.dA = EllPatchData(:,4);
+EllMat.nvX = EllPatchData(:,5);
+EllMat.nvY = EllPatchData(:,6);
+EllMat.nvZ = EllPatchData(:,7);
+EllMat.La = EllPatchData(:,8);
+EllMat.Lb = EllPatchData(:,9);
+EllMat.Lc = EllPatchData(:,10);
+EllMat.x0 = EllPatchData(:,11);
+EllMat.y0 = EllPatchData(:,12);
+EllMat.z0 = EllPatchData(:,13);
+EllMat.psi = EllPatchData(:,14);
+EllMat.phi = EllPatchData(:,15);
+EllMat.theta = EllPatchData(:,16);
+EllMat.rotMat = EulRotMatsData(:,:,:);
 
 %% Test Section
 
-%%{
+%{
 % BEGIN TEST SECTION
 fprintf('\n\n BEGIN TEST SECTION: \n\n');
 
-a0 = 1; b0 = 2; c0 = 1;
-x0 = 1; y0 = 1; z0 = 1;
-a1 = 1; b1 = 2; c1 = 1;
-x1 = 1; y1 = 2; z1 = 1;
+i = 1; j = 3;
+            a0 = EllPatchData(i*NpatchesEll-1,8);
+            b0 = EllPatchData(i*NpatchesEll-1,9);
+            c0 = EllPatchData(i*NpatchesEll-1,10);
+            x0 = EllPatchData(i*NpatchesEll-1,11);
+            y0 = EllPatchData(i*NpatchesEll-1,12);
+            z0 = EllPatchData(i*NpatchesEll-1,13);
+            ellID0 = EllPatchData(i*NpatchesEll-1,14);
+            
+            a1 = EllPatchData(j*NpatchesEll-1,8);
+            b1 = EllPatchData(j*NpatchesEll-1,9);
+            c1 = EllPatchData(j*NpatchesEll-1,10);
+            x1 = EllPatchData(j*NpatchesEll-1,11);
+            y1 = EllPatchData(j*NpatchesEll-1,12);
+            z1 = EllPatchData(j*NpatchesEll-1,13);
+            ellID1 = EllPatchData(j*NpatchesEll-1,14);
+
 
 lCollideFlag = -1;
 
@@ -88,7 +128,7 @@ S_1 = [2*A1, D1, F1, G1; D1, 2*B1, E1, H1; F1, E1, 2*C1, J1; G1,H1,J1,2*K1];
 EigMat = (S_0)\S_1;
 [EigVect,~] = eig(EigMat);
 
-lCollideFlag = -1;
+
 for i=1:length(EigVect(1,:))
     evecti = EigVect(:,i);
     if(isequal(evecti,[x0;y0;z0;1]))

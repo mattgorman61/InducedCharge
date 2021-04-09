@@ -32,14 +32,14 @@ xlabel('x'); ylabel('y'); zlabel('z');
 
 %% Euler Angle Matrix: Axis Rotation
 
-%{
-psi = -pi/4;
-phi = -pi/4;
+%%{
+psi = pi/4;
+phi = pi/4;
 theta = pi/4;
 
 A_Eul = zeros(3);
 
-A_Eul(1,1) = cos(psi)*cos(phi) - cos(theta)*sin(theta)*sin(psi);
+A_Eul(1,1) = cos(psi)*cos(phi) - cos(theta)*sin(phi)*sin(psi);
 A_Eul(1,2) = -sin(psi)*cos(theta) - cos(theta)*sin(phi)*cos(psi);
 A_Eul(1,3) = sin(theta)*sin(phi);
 
@@ -64,6 +64,8 @@ quiver3(x,y,z,vx_rot',vy_rot',vz_rot','r');
 axis equal;
 xlim([-1 1]); ylim([-1 1]); zlim([-1 1]);
 xlabel('x'); ylabel('y'); zlabel('z');
+
+%A_Eul*A_Eul'
 
 %% GET QUATERNIONS
 
@@ -105,7 +107,7 @@ A_quat(3,1) = 2*(eps3*eps1 + eps2*eta);
 A_quat(3,2) = 2*(eps3*eps2 - eps1*eta);
 A_quat(3,3) = 1 - 2*(eps1^2 + eps2^2);
 
-
+% A_quat*A_quat'
 %quiver3(x,y,z,vx,vy,vz,'k');
 
 vx_rot2 = A_quat*vx'; vy_rot2 = A_quat*vy'; vz_rot2 = A_quat*vz';

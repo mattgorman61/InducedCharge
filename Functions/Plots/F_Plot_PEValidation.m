@@ -120,6 +120,7 @@ end
 
 
     hold on;
+    box on;
     
     % Note: Cell Array of Colors Requires Curly Braces!
     colorsVect = {[1 0 0], [0 1 0], [0 0 1], [1 1 0], [0 1 1], [1 0 1], [0 0 0], [1 0.2 0.1], [0.2 0.1 1]};

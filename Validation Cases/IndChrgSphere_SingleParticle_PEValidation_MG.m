@@ -7,8 +7,8 @@ fprintf('INDUCED CHARGE ON A SPHERE\n\n');
 % Add Function Folder to Current Path
 currFolder = pwd;
 % fprintf('%s',currFolder);
-path1 = strcat(currFolder,'\Functions');        addpath(path1);
-path2 = strcat(currFolder,'\Functions\Plots');  addpath(path2);
+path1 = strcat(currFolder,'\..\Functions');        addpath(path1);
+path2 = strcat(currFolder,'\..\Functions\Plots');  addpath(path2);
 
 
 
@@ -26,7 +26,7 @@ lEField = false;
 R0 = 1;
 %R = [R0,0.5*R0];
 R = R0;
-NpatchesSph = 1000; % Number of patches per sphere
+NpatchesSph = 300; % Number of patches per sphere
 numSpheres = 1; 
 Npatches = numSpheres*NpatchesSph;
 
@@ -106,10 +106,10 @@ x=x'; y=y'; z=z';
 %}
 
 %% Create Spheres
-%[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheres(R,NpatchesSph,numSpheres,dxs,dys,dzs);
+[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheres(R,NpatchesSph,numSpheres,dxs,dys,dzs);
 
 % Bad Case, Equal Angles. Make NpatchesSph a perfect square
-[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheresEquiAng(R,NpatchesSph,numSpheres,dxs,dys,dzs);
+%[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheresEquiAng(R,NpatchesSph,numSpheres,dxs,dys,dzs);
 
 
 % Plot Sphere with Normal Vectors

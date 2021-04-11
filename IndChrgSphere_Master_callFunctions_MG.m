@@ -38,6 +38,11 @@ z_pc = 0;
 pcharge = -1;
 
 
+% External Field Parameters
+Ext_EField_x = 0;
+Ext_EField_y = 0;
+Ext_EField_z = 0;
+
 
 %% Discretize Spherical Surface
 
@@ -72,8 +77,8 @@ end
 
 %% CALL FUNCTIONS
 [sigma_b,b] = F_getSigmaB_Loops(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_f,k_air,k_obj);
-[sigma_b2,b2] = F_getSigmaB_Matrix(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_f,k_air,k_obj);
-
+[sigma_b2,b2] = F_getSigmaB_Matrix(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
+%R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z
 %{
 %Check if sigma_b result is the same...
 diffSigmaB = sigma_b2 - sigma_b

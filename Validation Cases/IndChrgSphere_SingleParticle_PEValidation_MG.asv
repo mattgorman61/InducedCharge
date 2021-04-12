@@ -13,8 +13,7 @@ path2 = strcat(currFolder,'\..\Functions\Plots');  addpath(path2);
 
 
 % Logicals
-lshowSpheres = true;
-    lshowNVects = true;
+lshowNVects = false;
 lshowSurfaceCharge = true;
 lshowPEResults = true; %  N/A for multiple spheres
 lshowForceResults = false;
@@ -27,7 +26,7 @@ lEField = false;
 R0 = 1;
 %R = [R0,0.5*R0];
 R = R0;
-NpatchesSph = 950; % Number of patches per sphere
+NpatchesSph = 300; % Number of patches per sphere
 numSpheres = 1; 
 Npatches = numSpheres*NpatchesSph;
 
@@ -114,9 +113,9 @@ x=x'; y=y'; z=z';
 
 
 % Plot Sphere with Normal Vectors
-if(lshowSpheres)
+if(lshowNVects)
     figure();
-    F_Plot_NormVectors(R,x,y,z,nVect,lshowNVects);
+    F_Plot_NormVectors(R,x,y,z,nVect);
 end
 
 %% CALL FUNCTIONS

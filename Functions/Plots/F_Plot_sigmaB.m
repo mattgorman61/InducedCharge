@@ -42,19 +42,25 @@ end
 %}
 
 
-colormap(cmap_cust);
+%colormap(cmap_cust);
 
 %}
 
-colorbar;
+cbar = colorbar;
+cbarTitle = title(cbar, '\sigma_{b}');
+cbarTitle.FontName = 'Times New Roman';
+cbarTitle.FontSize = 16;
+%cbar.FontSize = 20;
+
+
 axis equal;    
 tit2 = title('Surface Bound Charge'); tit2.FontSize = 12; 
 tit2.FontName = 'Times New Roman';
 %set(gca,'LineWidth',1.5); set(gcf,'Position',[100,100,500,400]);
 view(35,20);
-xlabel('x','FontName','Times New Roman');
-ylabel('y','FontName','Times New Roman');
-zlabel('z','FontName','Times New Roman');
+xlabel('\bf{x}','FontName','Times New Roman');
+ylabel('\bf{y}','FontName','Times New Roman');
+zlabel('\bf{z}','FontName','Times New Roman');
 
 if(lEField)
     numDiv = 6;
@@ -67,6 +73,7 @@ if(lEField)
     axis equal;
 end
 
+%{
 if(lpCharge)
     if(lEField)
         legend('Surface Charge Density','Point Charge','External E-Field','Location','south');
@@ -81,7 +88,7 @@ else
     end
 end
 
-
+%}
     
 finished = true;
 

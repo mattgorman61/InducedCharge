@@ -13,11 +13,10 @@ path2 = strcat(currFolder,'\..\Functions\Plots');  addpath(path2);
 
 
 % Logicals
-lshowSpheres = true;
-    lshowNVects = true;
+lshowNVects = true;
 lshowSurfaceCharge = true;
-lshowPEResults = true; %  N/A for multiple spheres
-lshowForceResults = false;
+lshowPEResults = false; %  N/A for multiple spheres
+lshowForceResults = true;
 
 lpCharge = true;
 lEField = false;
@@ -27,7 +26,7 @@ lEField = false;
 R0 = 1;
 %R = [R0,0.5*R0];
 R = R0;
-NpatchesSph = 950; % Number of patches per sphere
+NpatchesSph = 300; % Number of patches per sphere
 numSpheres = 1; 
 Npatches = numSpheres*NpatchesSph;
 
@@ -52,7 +51,7 @@ k_obj = 1;
 k_air = .1;
 k_tilda = k_obj/k_air; k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
 %epsilon_0 = 8.85*10^(-12);
-epsilon_0 = 1;
+epsilon_0 = 1; % Is epsilon_0 the same as k_air?
 
 %%{
 % External E-Field NEED TO INCLUDE
@@ -114,9 +113,9 @@ x=x'; y=y'; z=z';
 
 
 % Plot Sphere with Normal Vectors
-if(lshowSpheres)
+if(lshowNVects)
     figure();
-    F_Plot_NormVectors(R,x,y,z,nVect,lshowNVects);
+    F_Plot_NormVectors(R,x,y,z,nVect);
 end
 
 %% CALL FUNCTIONS
@@ -137,7 +136,6 @@ sigma = sigma_b + sigma_f;
 if(lshowSurfaceCharge)
     figure();
     F_Plot_sigmaB(x,y,z,x_pcs,y_pcs,z_pcs,sigma_b,lpCharge,lEField,Ext_EField_x,Ext_EField_y,Ext_EField_z);
-    %set(gcf,'Position',[100,100,500,400]);
     %{
     fig2 = figure(2);
     scatter3(x,y,z,12,sigma_b,'filled');
@@ -175,7 +173,8 @@ end
 
 if(lshowForceResults)
     figure();
-    F_Plot_ForceVectors(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,lpCharge,lEField,sigma_b,sigma_f,k_air,k_obj,epsilon_0);
+    F_Plot_ForceVectors(R,x,y,z,dA,nVect,x_pcs,y_pcs,z_pcs,pcharge,lpCharge,lEField,sigma_b,sigma_f,k_air,k_obj,epsilon_0);
 end
+
 
 %}

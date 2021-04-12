@@ -13,11 +13,12 @@ path2 = strcat(currFolder,'\..\Functions\Plots');  addpath(path2);
 
 
 % Logicals
-lshowSpheres = true;
-    lshowNVects = true;
+lshowNVects = true;
 lshowSurfaceCharge = true;
-lshowPEResults = true; %  N/A for multiple spheres
-lshowForceResults = false;
+lshowPEResults = false; %  N/A for multiple spheres
+lshowPotentials = true;
+lshowPotentialValidation = true;
+lshowForces = false;
 
 lpCharge = true;
 lEField = false;
@@ -27,7 +28,7 @@ lEField = false;
 R0 = 1;
 %R = [R0,0.5*R0];
 R = R0;
-NpatchesSph = 950; % Number of patches per sphere
+NpatchesSph = 300; % Number of patches per sphere
 numSpheres = 1; 
 Npatches = numSpheres*NpatchesSph;
 
@@ -52,7 +53,7 @@ k_obj = 1;
 k_air = .1;
 k_tilda = k_obj/k_air; k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
 %epsilon_0 = 8.85*10^(-12);
-epsilon_0 = 1;
+epsilon_0 = 1; % Is epsilon_0 the same as k_air?
 
 %%{
 % External E-Field NEED TO INCLUDE
@@ -107,17 +108,21 @@ x=x'; y=y'; z=z';
 %}
 
 %% Create Spheres
-[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheres(R,NpatchesSph,numSpheres,dxs,dys,dzs);
+%[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheres(R,NpatchesSph,numSpheres,dxs,dys,dzs);
 
-% Bad Case, Equal Angles. Make NpatchesSph a perfect square
+% Bad Case, Equal Angles. Hardcode so that NpatchesSph is always a perfect square
 %[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheresEquiAng(R,NpatchesSph,numSpheres,dxs,dys,dzs);
+
+% Create Ring (represents axisymmetric particle
+[x,y,z,dA,dAmat,nVect,sphereID] = F_createRing(R,NpatchesSph,numSpheres,dxs,dys,dzs);
 
 
 % Plot Sphere with Normal Vectors
-if(lshowSpheres)
+if(lshowNVects)
     figure();
-    F_Plot_NormVectors(R,x,y,z,nVect,lshowNVects);
+    F_Plot_NormVectors(R,x,y,z,nVect);
 end
+
 
 %% CALL FUNCTIONS
 %Multiple Spheres:
@@ -137,7 +142,6 @@ sigma = sigma_b + sigma_f;
 if(lshowSurfaceCharge)
     figure();
     F_Plot_sigmaB(x,y,z,x_pcs,y_pcs,z_pcs,sigma_b,lpCharge,lEField,Ext_EField_x,Ext_EField_y,Ext_EField_z);
-    %set(gcf,'Position',[100,100,500,400]);
     %{
     fig2 = figure(2);
     scatter3(x,y,z,12,sigma_b,'filled');
@@ -171,11 +175,27 @@ if(lshowPEResults)
     F_Plot_PEValidation(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,epsilon_0,Ext_EField_x,Ext_EField_y,Ext_EField_z );
 end
 
+%% Electrostatic Potential Calculation
+
+if(lshowPotentials)
+    figure();
+    F_Plot_Potential(R,x,y,z,dA,nVect,x_pcs,y_pcs,z_pcs,pcharge,lpCharge,lEField,sigma_b,sigma_f,k_air,k_obj,epsilon_0);
+end
+
+if(lshowPotentialValidation)
+    figure();
+    F_Plot_PotentialValidation(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,epsilon_0,Ext_EField_x,Ext_EField_y,Ext_EField_z);
+end
+
+
+
+
 %% Electrostatic Force Calculation
 
-if(lshowForceResults)
+if(lshowForces)
     figure();
-    F_Plot_ForceVectors(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,lpCharge,lEField,sigma_b,sigma_f,k_air,k_obj,epsilon_0);
+    F_Plot_ForceVectors(R,x,y,z,dA,nVect,x_pcs,y_pcs,z_pcs,pcharge,lpCharge,lEField,sigma_b,sigma_f,k_air,k_obj,epsilon_0);
 end
+
 
 %}

@@ -1,6 +1,6 @@
-function [finished] = F_Plot_PEValidation(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_f,epsilon_0,Ext_EField_x,Ext_EField_y,Ext_EField_z)
+function [finished] = F_Plot_PotentialValidation(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_f,epsilon_0,Ext_EField_x,Ext_EField_y,Ext_EField_z)
 % PLOTS SIMULATION RESULTS AGAINST ANALYTICAL RESULTS
-%   Analytical Results from Barros and Luijten 2014, Phys. Rev. Letters
+%   Analytical Results from Jones, Electromechanics of Particles
 
 % Add Functions Folder to the path
 currDir = pwd;
@@ -13,9 +13,13 @@ addpath (newdir);
 %% PLOT SIMULATION RESULTS
 PCx_vect = [1.05, 1.075, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45, 1.5];
 R_vect = PCx_vect - 1;
+k_air = 1;
+k_sphere = [0.1, 0.5, 1, 2.5, 10, 50];
+N = 20;
 
 % kt = 0 0.025 0.1 0.4 2.5 10 40
 
+%{
 k_air = 1; k_obj = 40;
 U_kt40_Norm = zeros(length(PCx_vect),1);
 for i = 1:length(PCx_vect)
@@ -30,7 +34,6 @@ k_air = 1; k_obj = 10;
 U_kt10_Norm = zeros(length(PCx_vect),1);
 for i = 1:length(PCx_vect)
     [sigma_b_i] = F_getSigmaB_Matrix(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
-                                     
     sigma_i = sigma_b_i + sigma_f;
     [U_pCharge_Norm_i] = F_getPE_Loops(R,x,y,z,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma_i,k_air,k_obj,epsilon_0);
     U_kt10_Norm(i) = U_pCharge_Norm_i;
@@ -96,69 +99,85 @@ U_vect_Norm_kt10 = [-0.123970, -0.047868, -0.025782, -0.015885, -0.010582]; Net_
 % Net charge is: 0.073093
 
 %}
+%}
 
 
 
+%% PE of sphere: Analytical Soln (Equation from Jones)
 
-%% PE of sphere: Analytical Soln (Equation from Barros)
 
-d_vect_anal = linspace(0.05, 0.5, 100);
-k_tildaVect = [0 0.025 0.1 0.4 2.5 10 40]';
-PE_vect_anal = zeros(length(d_vect_anal),length(k_tildaVect));
-k_tildaVectString = strings(length(k_tildaVect),1)';
+plotVect = zeros(length(k_sphere));
+legstring = strings(length(k_sphere),1);
 
-for i = 1:length(k_tildaVect)
-    k_tildaVectString(i) = strcat('\kappa = ', {' '}, num2str(k_tildaVect(i)));
+figure();
+hold on;
+box on;
+    
+for i = 1:length(k_sphere)    
+    [theta_i,spherePot_i] = F_get_AnalPotentialSphere_Jones(R,pcharge,x_pc,y_pc,z_pc,k_air,k_sphere(i),N);
+    p_i = plot(theta_i,spherePot_i);
+    plotVect(i) = p_i;
+    legstring(i) = strcat('\kappa_{s} / \kappa_{air} = ', num2str(k_sphere(i)/k_air,'%0.2f') );
+        
 end
 
-% Plot of Sphere PEs - Analytical
-for j = 1:length(k_tildaVect)
-    for i = 1:length(d_vect_anal)
-        PE_vect_anal(i,j) = F_getAnalyticalPEResults_Barros_ReadOnly(k_air,pcharge,k_tildaVect(j),d_vect_anal(i),R);
-    end
+legend(legstring);
+title('N = ', N);
+
+figure();
+hold on;
+box on;
+Nvect = [1 5 10 20 50 55 ];
+legstring2 = strings(length(Nvect),1);
+
+for i = 1:length(Nvect)    
+    [theta_i,spherePot_i] = F_get_AnalPotentialSphere_Jones(R,pcharge,x_pc,y_pc,z_pc,k_air,k_sphere(4),Nvect(i));
+    p_i = plot(theta_i,spherePot_i);
+    plotVect(i) = p_i;
+    legstring2(i) = strcat('N = ', num2str(Nvect(i)));
 end
+title_str = ['\kappa_s / \kappa_{air} = ', num2str(k_sphere(4)/k_air),' ', 'd/R = ', num2str(x_pc/R - 1)];
+title (title_str);
+legend(legstring2);
 
-
-    hold on;
-    box on;
+figure();
+hold on;
+box on;
+x_pcVect = R * [1.05, 1.1, 1.2, 1.3, 1.4, 1.5];
+N=20;
     
-    % Note: Cell Array of Colors Requires Curly Braces!
-    colorsVect = {[1 0 0], [0 1 0], [0 0 1], [1 1 0], [0 1 1], [1 0 1], [0 0 0], [1 0.2 0.1], [0.2 0.1 1]};
+for i = 1:length(x_pcVect)    
+    [theta_i,spherePot_i] = F_get_AnalPotentialSphere_Jones(R,pcharge,x_pcVect(i),y_pc,z_pc,k_air,k_sphere(i),N);
+    p_i = plot(theta_i,spherePot_i);
+    plotVect(i) = p_i;
+    legstring(i) = strcat('d/R = ', num2str(x_pcVect(i)/R - 1,'%0.2f') );
+        
+end
+legend(legstring);
+%title('N = ', N); 
     
-    for i = 1:length(PE_vect_anal(1,:))
-        plot(d_vect_anal,PE_vect_anal(:,i),'color',colorsVect{i});
-    end
-    
-    scatter(R_vect, U_kt0_Norm, 50, colorsVect{1}, '^', 'filled', 'MarkerEdgeColor', 'k');
-    scatter(R_vect, U_kt0p025_Norm, 50, colorsVect{2}, '^', 'filled', 'MarkerEdgeColor', 'k');
-    scatter(R_vect, U_kt0p1_Norm, 50, colorsVect{3}, '^', 'filled', 'MarkerEdgeColor', 'k');
-    scatter(R_vect, U_kt0p4_Norm, 50, colorsVect{4}, 's', 'filled', 'MarkerEdgeColor', 'k');
-    scatter(R_vect, U_kt2p5_Norm, 50, colorsVect{5}, '^', 'filled', 'MarkerEdgeColor', 'k');
-    scatter(R_vect, U_kt10_Norm, 50, colorsVect{6}, 's', 'filled', 'MarkerEdgeColor', 'k');
-    scatter(R_vect, U_kt40_Norm, 50, colorsVect{7}, '^', 'filled', 'MarkerEdgeColor', 'k');
+% Note: Cell Array of Colors Requires Curly Braces!
+colorsVect = {[1 0 0], [0 1 0], [0 0 1], [1 1 0], [0 1 1], [1 0 1], [0 0 0], [1 0.2 0.1], [0.2 0.1 1]};
     
     
-    %leg3 = legend(k_tildaVectString);
-    %leg3 = legend([k_tildaVectString, '\kappa = 0','\kappa = 0.025','\kappa = 0.1', '\kappa = 0.4', '\kappa = 2.5', '\kappa = 10', '\kappa = 40']);
-    
-xlabel('\it{\bf{Charge-surface Distance (units of sphere radius)}}','fontsize',18,'fontname','Times New Roman');
+xlabel('Charge-surface Distance','fontsize',24,'fontname','Times New Roman');
 %xlabel('Charge-surface Distance','fontsize',24,'fontname','Times New Roman','fontangle','Italic');
-ylabel('\it{\bf{Potential Energy}}','fontsize',18,'fontname','Times New Roman');
+ylabel('Potential Energy','fontsize',24,'fontname','Times New Roman');
 set(gca, 'LineWidth', 2.0 );
-set(gca, 'fontsize', 24.0 );
+set(gca, 'fontsize', 16.0 );
 set(gca, 'XMinorTick', 'on');
 set(gca, 'Ticklength', [0.02;0.01] );
 set(gca, 'YMinorTick', 'on');
 set(gca, 'Ticklength', [0.02;0.01] );
-set(gca, 'XTick', 0:0.1:0.5 );
-set(gca, 'YTick', -0.4:.1:0.3 );
+%set(gca, 'XTick', 0:0.1:0.5 );
+%set(gca, 'YTick', -0.4:.1:0.3 );
 
 h = findobj(gca,'Type','line');
 set(h, 'Markersize', 8);
 set(h, 'Linewidth', 2);
 
-leg = legend([k_tildaVectString, '\kappa = 0','\kappa = 0.025','\kappa = 0.1', '\kappa = 0.4', '\kappa = 2.5', '\kappa = 10', '\kappa = 40']);
-set(leg, 'fontsize', 16.0,'fontname','Times New Roman','fontangle','Italic','location','southeast','NumColumns',2);
+%leg = legend([k_tildaVectString, '\kappa = 0','\kappa = 0.025','\kappa = 0.1', '\kappa = 0.4', '\kappa = 2.5', '\kappa = 10', '\kappa = 40']);
+%set(leg, 'fontsize', 16.0,'fontname','Times New Roman','fontangle','Italic','location','southeast','NumColumns',2);
 %set(leg,'fontname','Times New Roman');
 %set(leg,'fontangle','Italic');
 axis([0 0.55 -0.4 0.3]);
@@ -168,5 +187,6 @@ set(gcf,'position',[0,0,800,600]);
 finished = true;
 
 %}
+
 end
 

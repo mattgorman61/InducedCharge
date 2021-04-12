@@ -1,4 +1,4 @@
-function [x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheresEquiAng(R,NpatchesSph,numSpheres,dxs,dys,dzs)
+function [x,y,z,dA,dAmat,nVect,sphereID] = F_createRing(R,NpatchesSph,numSpheres,dxs,dys,dzs)
 % PROVIDES NORMALIZED POTENTIAL ENERGY OF THE POINT CHARGE SPHERE SYSTEM
 %{   
     Given:
@@ -22,10 +22,11 @@ y = zeros(Npatches,1)';
 z = zeros(Npatches,1)';
 sphereID = zeros(Npatches,1);
 
-numTheta = 25;
+numTheta = 100;
 numPhi = NpatchesSph/numTheta;
 theta = linspace(0.01,2*pi-0.01,numTheta);
-phi = linspace(0.01,pi-0.01,numPhi);
+%phi = linspace(0.01,pi-0.01,numPhi);
+phi = pi/2;
 
 %Npatches == (numTheta*numPhi*numSpheres)
 

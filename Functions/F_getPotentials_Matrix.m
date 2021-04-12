@@ -1,9 +1,10 @@
-function [Fnet,Fx,Fy,Fz,F0] = F_getForces_Matrix(R,x,y,z,dA,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0)
+function [phi,phi_0,phi_norm] = F_getPotentials_Matrix(R,x,y,z,dA,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0)
 % PROVIDES VECTOR OF FORCES ACTING ON EACH PATCH OF THE SPHERES
 %{   
     Given:
     R..................... sphere radius
     x,y,z................. locations of the patches
+    dA ................... vector of patch areas, constant for spheres.
     nVect................. matrix of normal vectors for each patch (nVect(i) = nVx(i), nVy(i), nVz(i))
     x_pc,y_pc,z_pc........ location of the point charge
     pcharge............... charge of point charge
@@ -17,6 +18,7 @@ function [Fnet,Fx,Fy,Fz,F0] = F_getForces_Matrix(R,x,y,z,dA,nVect,x_pc,y_pc,z_pc
     
 
 Recall: F = qE = 1/4/pi/epsilon_0*q1*q2*r/(r^3)
+        E = grad(phi), phi = 1/4/pi/epsilon_0*pcharge*r/(r^2);
         Only need to consider Force of point charge on each patch. The
         patches form one body (cannot apply a force to itself)
         
@@ -33,6 +35,7 @@ Npatches = length(x);
 % nVectM(:,;,2) = nVY1, nVY2, nVY3, ... (repeated for each row)
 % etc.
 nVectM = zeros(Npatches, Npatches,3);
+
 for i = 1:3
     nVectM(:,:,i) = repmat(nVect(:,i),1,Npatches);
 end
@@ -42,7 +45,8 @@ k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
 
 
 %{
-% NOT NEEDED! For a single sphere, just need to consider effect of point charge on each patch
+% PATCH-PATCH INTERACTIONS NOT NEEDED WITHIN A SINGLE SPHERE! For a single sphere, just need to consider effect of external point charge on each patch
+
 % Patch-to-patch location differences matrix
 % ppld(:,:,1) = x1-x1, x1-x2, x1-x3, ... 
 %               x2-x1, x2-x2, x2-x3, ... xi-xj
@@ -70,13 +74,8 @@ rpcp = sqrt(pcpld(:,1).*pcpld(:,1) + pcpld(:,2).*pcpld(:,2) + ...
 % nVect 
 % nvx(i,:) = nvx_i, nvy_i, nvz_i (Repeat for each row i)
 
-Fx = pcpld(:,1)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma.*dA;
-Fy = pcpld(:,2)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma.*dA;
-Fz = pcpld(:,3)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma.*dA;
-
-Fnet = [sum(Fx),sum(Fy),sum(Fz)];
-
-F0 = (pcharge^2)/16/pi/epsilon_0/(R^2);
-
+phi = 1/4/pi/epsilon_0 * pcharge ./rpcp;
+phi_0 = 1/4/pi/epsilon_0 * pcharge ./R;
+phi_norm = phi./phi_0;
 
 end

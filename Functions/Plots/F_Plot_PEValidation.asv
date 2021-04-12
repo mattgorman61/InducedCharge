@@ -143,7 +143,7 @@ end
     
 xlabel('\it{\bf{Charge-surface Distance (units of sphere radius)}}','fontsize',18,'fontname','Times New Roman');
 %xlabel('Charge-surface Distance','fontsize',24,'fontname','Times New Roman','fontangle','Italic');
-ylabel('\it{\bf{Potential Energy}}','fontsize',18,'fontname','Times New Roman');
+ylabel('\it{\bf{Potential Energy}}','fontsize',,'fontname','Times New Roman');
 set(gca, 'LineWidth', 2.0 );
 set(gca, 'fontsize', 24.0 );
 set(gca, 'XMinorTick', 'on');

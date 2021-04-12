@@ -18,13 +18,13 @@ lshowSurfaceCharge = true;
 lshowPEResults = false; %  N/A for multiple spheres
 lshowForceResults = false;
 
-lpCharge = true;
-lEField = true;
+lpCharge = false;
+lEField = false;
 
 
 % Sphere and Medium Parameters
 R0 = 1;
-R = [R0,0.5*R0];
+R = [R0,0.5*R0, R0];
 %R = R0;
 NpatchesSph = 1000; % Number of patches per sphere
 numSpheres = 2; 
@@ -44,10 +44,10 @@ end
 % dAmat = repmat(dA',Npatches,1);
 
 % Center x,y,z coordinates for each of the spheres
-dxs = [0,0,0]; dys = [0, 3*R0, 5*R0]; dzs = [0,0,0];
+dxs = [0,0,0]; dys = [0, 2*R0, 5*R0]; dzs = [0,0,0];
 
 sigma_f = zeros(Npatches,1); % Neglecting any free charges (perfect insulator?)
-k_obj = 1;
+k_obj = 1000;
 k_air = .1;
 k_tilda = k_obj/k_air; k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
 %epsilon_0 = 8.85*10^(-12);
@@ -55,7 +55,7 @@ epsilon_0 = 1;
 
 %%{
 % External E-Field NEED TO INCLUDE
-Ext_EField_x = 10;
+Ext_EField_x = 0;
 Ext_EField_y = 0;
 Ext_EField_z = 0;
 %}
@@ -65,7 +65,7 @@ x_pcs = [1.5*R0];
 y_pcs = [0];
 z_pcs = [0];
 %surfDists = sqrt((x_pcs-dxs).^2 + (y_pcs-dys).^2 + (z_pcs-dzs).^2) /R;
-pcharge = [-1];
+pcharge = [0];
 
 % EVENTUALLY WANT TO MAKE CODE ABLE TO HANDLE ANY NUMBER OF POINT CHARGES
 

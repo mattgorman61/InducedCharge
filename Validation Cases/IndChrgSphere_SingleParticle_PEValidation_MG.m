@@ -14,9 +14,9 @@ path2 = strcat(currFolder,'\..\Functions\Plots');  addpath(path2);
 
 % Logicals
 lshowSpheres = true;
-    lshowNVects = true;
+    lshowNVects = false;
 lshowSurfaceCharge = true;
-lshowPEResults = true; %  N/A for multiple spheres
+lshowPEResults = false; %  N/A for multiple spheres
 lshowForceResults = false;
 
 lpCharge = true;
@@ -27,7 +27,7 @@ lEField = false;
 R0 = 1;
 %R = [R0,0.5*R0];
 R = R0;
-NpatchesSph = 950; % Number of patches per sphere
+NpatchesSph = 200; % Number of patches per sphere
 numSpheres = 1; 
 Npatches = numSpheres*NpatchesSph;
 

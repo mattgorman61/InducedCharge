@@ -46,7 +46,7 @@ end
 
 
 
-sigma_f = zeros(Npatches,1); % Neglecting any free charges (perfect insulator?)
+sigma_f = ones(Npatches,1); % Neglecting any free charges (perfect insulator?)
 k_obj = 1;
 k_air = .1;
 k_tilda = k_obj/k_air; k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
@@ -57,7 +57,7 @@ epsilon_0 = 1;
 % External E-Field NEED TO INCLUDE
 Ext_EField_x = 0;
 Ext_EField_y = 0;
-Ext_EField_z = 10;
+Ext_EField_z = 0;
 %}
 
 % Point Charge Parameters

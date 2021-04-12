@@ -13,11 +13,12 @@ path2 = strcat(currFolder,'\..\Functions\Plots');  addpath(path2);
 
 
 % Logicals
-lshowNVects = true;
+lshowSpheres = true;
+    lshowNVects = true;
 lshowSurfaceCharge = true;
-lshowPEResults = false; %  N/A for multiple spheres
+lshowPEResults = true; %  N/A for multiple spheres
 lshowPotentials = true;
-lshowPotentialValidation = true;
+lshowPotentialValidation = false;
 lshowForces = false;
 
 lpCharge = true;
@@ -117,10 +118,10 @@ x=x'; y=y'; z=z';
 [x,y,z,dA,dAmat,nVect,sphereID] = F_createRing(R,NpatchesSph,numSpheres,dxs,dys,dzs);
 
 
-% Plot Sphere with Normal Vectors
-if(lshowNVects)
+% Plot Sphere with (or without) Normal Vectors
+if(lshowSpheres)
     figure();
-    F_Plot_NormVectors(R,x,y,z,nVect);
+    F_Plot_NormVectors(R,x,y,z,nVect,lshowNVects);
 end
 
 

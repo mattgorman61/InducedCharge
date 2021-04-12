@@ -4,6 +4,8 @@ fprintf('INDUCED CHARGE ON A SPHERE\n\n');
 % Notes for this code: https://livejohnshopkins-my.sharepoint.com/:p:/g/personal/mgorma18_jh_edu/EeEbjWCeZedBjvwOWXS5evsBl3YFRVGzGH_HL-aBKbnk0Q?e=TOGlLM
 % (Slide 50)
 
+t1 = cputime;
+
 % Add Function Folder to Current Path
 currFolder = pwd;
 % fprintf('%s',currFolder);
@@ -13,20 +15,22 @@ path2 = strcat(currFolder,'\..\Functions\Plots');  addpath(path2);
 
 
 % Logicals
-lshowNVects = false;
+lshowSpheres = true;
+lshowNVects = true;
 lshowSurfaceCharge = true;
-lshowPEResults = true; %  N/A for multiple spheres
+lshowPEResults = false; %  N/A for multiple spheres
 lshowForceResults = false;
+lshowOldCompResults = true;
 
 lpCharge = true;
-lEField = false;
+lEField = true;
 
 
 % Sphere and Medium Parameters
 R0 = 1;
-%R = [R0,0.5*R0];
-R = R0;
-NpatchesSph = 300; % Number of patches per sphere
+R = R0*ones(100,1);
+%R = R0;
+NpatchesSph = 1000; % Number of patches per sphere
 numSpheres = 1; 
 Npatches = numSpheres*NpatchesSph;
 
@@ -44,10 +48,11 @@ end
 % dAmat = repmat(dA',Npatches,1);
 
 % Center x,y,z coordinates for each of the spheres
-dxs = [0,0,0]; dys = [0, 3*R0, 5*R0]; dzs = [0,0,0];
+dxs = linspace(numSpheres*-1.1,numSpheres*1.1,numSpheres); 
+dys = zeros(numSpheres,1); dzs = zeros(numSpheres,1);
 
 sigma_f = zeros(Npatches,1); % Neglecting any free charges (perfect insulator?)
-k_obj = 1;
+k_obj = 1000;
 k_air = .1;
 k_tilda = k_obj/k_air; k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
 %epsilon_0 = 8.85*10^(-12);
@@ -55,17 +60,17 @@ epsilon_0 = 1;
 
 %%{
 % External E-Field NEED TO INCLUDE
-Ext_EField_x = 0;
+Ext_EField_x = 0.1;
 Ext_EField_y = 0;
 Ext_EField_z = 0;
 %}
 
 % Point Charge Parameters
-x_pcs = [1.5*R0];
-y_pcs = [0];
+x_pcs = [0];
+y_pcs = [10*R0];
 z_pcs = [0];
 %surfDists = sqrt((x_pcs-dxs).^2 + (y_pcs-dys).^2 + (z_pcs-dzs).^2) /R;
-pcharge = [-1];
+pcharge = [-10];
 
 % EVENTUALLY WANT TO MAKE CODE ABLE TO HANDLE ANY NUMBER OF POINT CHARGES
 
@@ -108,14 +113,11 @@ x=x'; y=y'; z=z';
 %% Create Spheres
 [x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheres(R,NpatchesSph,numSpheres,dxs,dys,dzs);
 
-% Bad Case, Equal Angles. Make NpatchesSph a perfect square
-%[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheresEquiAng(R,NpatchesSph,numSpheres,dxs,dys,dzs);
 
-
-% Plot Sphere with Normal Vectors
-if(lshowNVects)
+if (lshowSpheres)
+% Plot Sphere with (or without) Normal Vectors
     figure();
-    F_Plot_NormVectors(R,x,y,z,nVect);
+    F_Plot_NormVectors(R0,x,y,z,nVect,lshowNVects);
 end
 
 %% CALL FUNCTIONS
@@ -136,7 +138,6 @@ sigma = sigma_b + sigma_f;
 if(lshowSurfaceCharge)
     figure();
     F_Plot_sigmaB(x,y,z,x_pcs,y_pcs,z_pcs,sigma_b,lpCharge,lEField,Ext_EField_x,Ext_EField_y,Ext_EField_z);
-    %set(gcf,'Position',[100,100,500,400]);
     %{
     fig2 = figure(2);
     scatter3(x,y,z,12,sigma_b,'filled');
@@ -151,6 +152,8 @@ if(lshowSurfaceCharge)
     view(35,20);
     %}
 end
+
+%sa;lkfja;slkdfsj
 
 
 
@@ -177,4 +180,27 @@ if(lshowForceResults)
     F_Plot_ForceVectors(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,lpCharge,lEField,sigma_b,sigma_f,k_air,k_obj,epsilon_0);
 end
 
-%}
+t2 = cputime;
+
+if(lshowOldCompResults)
+    figure();
+    plot([2 3 5 10], [2.875 5.0625 14.5938 120], 'k-p');
+    
+    xlabel('\it{\bf{Number of Spheres}}','fontsize',18,'fontname','Times New Roman');
+    %xlabel('Charge-surface Distance','fontsize',24,'fontname','Times New Roman','fontangle','Italic');
+    ylabel('\it{\bf{Computation Time (s)}}','fontsize',18,'fontname','Times New Roman');
+    set(gca, 'LineWidth', 2.0 );
+    set(gca, 'fontsize', 24.0 );
+    set(gca, 'XMinorTick', 'on');
+    set(gca, 'Ticklength', [0.02;0.01] );
+    set(gca, 'YMinorTick', 'on');
+    set(gca, 'Ticklength', [0.02;0.01] );
+    %set(gca, 'XTick', 0:0.1:0.5 );
+    %set(gca, 'YTick', -0.4:.1:0.3 );
+end
+
+
+fprintf('\n\n\nEnd Program. Time Required: %g s\n\n', t2-t1);
+
+
+

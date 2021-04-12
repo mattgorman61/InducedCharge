@@ -42,7 +42,7 @@ end
 %}
 
 
-%colormap(cmap_cust);
+colormap(cmap_cust);
 
 %}
 

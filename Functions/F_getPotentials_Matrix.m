@@ -1,4 +1,4 @@
-function [phi,phi_0,phi_norm] = F_getPotentials_Matrix(R,x,y,z,dA,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0)
+function [phi,phi_0,phi_norm,theta] = F_getPotentials_Matrix(R,x,y,z,dA,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0)
 % PROVIDES VECTOR OF FORCES ACTING ON EACH PATCH OF THE SPHERES
 %{   
     Given:
@@ -28,6 +28,7 @@ Recall: F = qE = 1/4/pi/epsilon_0*q1*q2*r/(r^3)
 
 
 Npatches = length(x);
+theta = acos(x./((x.^2 + y.^2).^(1/2))
 
 %{
 % Normal Vector Matrix:

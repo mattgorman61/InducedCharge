@@ -11,19 +11,20 @@ addpath (newdir);
 
 
 sigma = sigma_f + sigma_b;
-[phi,phi_0,phi_norm] = F_getPotentials_Matrix(R,x,y,z,dA,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma,k_air,k_obj,epsilon_0);
+[phi,phi_0,phi_norm,theta] = F_getPotentials_Matrix(R,x,y,z,dA,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma,k_air,k_obj,epsilon_0);
 
 % Display Potential Values
 scatter3(x_pcs,y_pcs,z_pcs,12,'filled','k');
 hold on;
+axis equal;
 scatter3(x,y,z,12,phi_norm,'filled');
-xlim([-2*R, 2*R]); ylim([-2*R, 2*R]); zlim([-2*R, 2*R]);
+%xlim([-2*R, 2*R]); ylim([-2*R, 2*R]); zlim([-2*R, 2*R]);
 
 
 % Custom ColorMaps:
 numLevels = 100;
 cmap_cust = zeros(numLevels,3);
-%%{
+%{
 % Red/Gray
 for i = 1:numLevels
     cmap_cust(i,1) = 0.9 + 0.1*i/numLevels; 
@@ -32,7 +33,7 @@ for i = 1:numLevels
 end
 %}
 
-%{
+%%{
 % Purple/Gray
 for i = 1:numLevels
     cmap_cust(i,1) = 0.9 + 0.1*i/numLevels; 
@@ -42,12 +43,14 @@ end
 %}
 
 
-%colormap(cmap_cust);
+colormap(cmap_cust);
 
 %}
 
-colorbar;
-axis square;
+cbar = colorbar;
+cbarTitle = title(cbar, '\it{\psi}');
+cbarTitle.FontName = 'Times New Roman';
+cbarTitle.FontSize = 16;
 
 % Below is for Force calculations....
 %{

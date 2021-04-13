@@ -28,7 +28,8 @@ Recall: F = qE = 1/4/pi/epsilon_0*q1*q2*r/(r^3)
 
 
 Npatches = length(x);
-theta = acos(x./((x.^2 + y.^2).^(1/2))
+theta = atan2(y,x);
+%fprintf('\n\n THETA = %g  \n\n ',theta);
 
 %{
 % Normal Vector Matrix:
@@ -76,7 +77,7 @@ rpcp = sqrt(pcpld(:,1).*pcpld(:,1) + pcpld(:,2).*pcpld(:,2) + ...
 % nvx(i,:) = nvx_i, nvy_i, nvz_i (Repeat for each row i)
 
 phi = 1/4/pi/epsilon_0 * pcharge ./rpcp;
-phi_0 = 1/4/pi/epsilon_0 * pcharge ./R;
+phi_0 = 1/4/pi/epsilon_0 * abs(pcharge) ./R;
 phi_norm = phi./phi_0;
 
 end

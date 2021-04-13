@@ -1,14 +1,9 @@
-<<<<<<< HEAD
-function [lCollide,ContactPoint] = F_CollideCheck(a0,b0,c0,x0,y0,z0,AEul_0, a1,b1,c1,x1,y1,z1,AEul_1)
-=======
-function [lCollide] = F_CollideCheck(a0,b0,c0,x0,y0,z0,AEul_0, a1,b1,c1,x1,y1,z1,AEul_1)
->>>>>>> 0ca17086c1fcc1eab70bcdfa4acaa86b693d06e4
+function [x_coll,y_coll,z_coll] = F_CollidePoint(a0,b0,c0,x0,y0,z0,AEul_0, a1,b1,c1,x1,y1,z1,AEul_1)
 % CHECKS WHETHER TWO ELLIPSES HAVE COLLIDED
 %   Alfano and Greer 2003 Journ. of Guidance, Control, and Dynamics
 
 
 lCollideFlag = -1;
-ContactPoint = 0;
 
 % First Ellipse
 A0 = 1/a0^2; B0 = 1/b0^2; C0 = 1/c0^2; 
@@ -48,12 +43,7 @@ end
 
 if(lCollideFlag > 0)
     lCollide = true;
-<<<<<<< HEAD
-    [ContactPoint] = F_CollPoint_XRBlackBox(S_0,S_1);
-=======
-% Developing this!!!!!
-    %[xcoll,ycoll,zcoll] = F_CollidePoint(S_0,S_1, a0,b0,c0,x0,y0,z0,AEul_0, a1,b1,c1,x1,y1,z1,AEul_1);
->>>>>>> 0ca17086c1fcc1eab70bcdfa4acaa86b693d06e4
+    
 else
     lCollide = false;
 end

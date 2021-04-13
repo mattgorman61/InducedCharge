@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 function [collisionList,ContactPoint_1,ContactPoint_2] = F_CollideCheckCall(EllPatchData, NEll, NpatchesEll,EulRotMatsDataIn)
+=======
+function [collisionList] = F_CollideCheckCall(EllMatIn, EllPatchData, NEll, NpatchesEll,EulRotMatsDataIn)
+>>>>>>> 0ca17086c1fcc1eab70bcdfa4acaa86b693d06e4
 % CHECKS WHETHER ELLIPSES HAVE COLLIDED
 %   Alfano and Greer 2003 Journ. of Guidance, Control, and Dynamics
 
@@ -29,8 +33,12 @@ for i = 1:NEll
             AEul1 = EulRotMatsDataIn(:,:,j);
             ellID1 = EllPatchData(j*NpatchesEll,17);
             
+<<<<<<< HEAD
             [lColl_1,ContactPoint_1] = F_CollideCheck(a0,b0,c0,x0,y0,z0,AEul0, a1,b1,c1,x1,y1,z1,AEul1);
             [lColl_2,ContactPoint_2] = F_CollideCheck(a1,b1,c1,x1,y1,z1,AEul1, a0,b0,c0,x0,y0,z0,AEul0);
+=======
+            [lColl] = F_CollideCheck(a0,b0,c0,x0,y0,z0,AEul0, a1,b1,c1,x1,y1,z1,AEul1);
+>>>>>>> 0ca17086c1fcc1eab70bcdfa4acaa86b693d06e4
             
             if(lColl_1 == true)
                 fprintf('\nCOLLISION DETECTED. ELLIDs: %g, %g\n\n',ellID0,ellID1);

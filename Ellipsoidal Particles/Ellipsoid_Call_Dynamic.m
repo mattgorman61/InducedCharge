@@ -47,6 +47,28 @@ for n = 1:NEll
     %}
 end
 
+<<<<<<< HEAD
+=======
+EllMat.id = EllPatchData(:,17);
+EllMat.x = EllPatchData(:,1);
+EllMat.y = EllPatchData(:,2);
+EllMat.z = EllPatchData(:,3);
+EllMat.dA = EllPatchData(:,4);
+EllMat.nvX = EllPatchData(:,5);
+EllMat.nvY = EllPatchData(:,6);
+EllMat.nvZ = EllPatchData(:,7);
+EllMat.La = EllPatchData(:,8);
+EllMat.Lb = EllPatchData(:,9);
+EllMat.Lc = EllPatchData(:,10);
+EllMat.x0 = EllPatchData(:,11);
+EllMat.y0 = EllPatchData(:,12);
+EllMat.z0 = EllPatchData(:,13);
+EllMat.psi = EllPatchData(:,14);
+EllMat.phi = EllPatchData(:,15);
+EllMat.theta = EllPatchData(:,16);
+EllMat.rotMat = EulRotMatsData(:,:,:);
+
+>>>>>>> 0ca17086c1fcc1eab70bcdfa4acaa86b693d06e4
 colors = ['r','b','k','g','m'];
 figure(frameNum);
 hold on;
@@ -60,7 +82,11 @@ end
 
 axis equal;
 grid on;
+<<<<<<< HEAD
 %view(0,90);
+=======
+view(0,90);
+>>>>>>> 0ca17086c1fcc1eab70bcdfa4acaa86b693d06e4
 xlabel('x','fontsize',24,'fontname','Times New Roman','fontangle','Italic'); 
 ylabel('y','fontsize',24,'fontname','Times New Roman','fontangle','Italic'); 
 zlabel('z','fontsize',24,'fontname','Times New Roman','fontangle','Italic');
@@ -72,6 +98,7 @@ set(gca, 'YMinorTick', 'on');
 set(gca, 'Ticklength', [0.02;0.01] );
 
 %for i=1:tsteps
+<<<<<<< HEAD
 [collisionList,cPoint_1,cPoint_2] = F_CollideCheckCall(EllPatchData, NEll, NpatchesEll,EulRotMatsData)
 
 if(length(collisionList)>0)
@@ -114,3 +141,25 @@ if(collflag<0)
     pause;
 end
 end
+=======
+collisionList = F_CollideCheckCall(EllMat, EllPatchData, NEll, NpatchesEll, EulRotMatsData);
+
+if(length(collisionList)>0)
+    %annotation('textbox', [0.5, 0.5, 0.25, 0.25], 'string', 'COLLISION DETECTED','FitBoxToText','on','Color','r');
+    txtbox = annotation('textbox',[0.6 0.5 0 0],'string',{'COLLISION','DETECTED'},'FitBoxToText','on','Color','c','FontSize',18,'fontangle','italic','fontname','Times New Roman');
+    txtbox.BackgroundColor = 'w';
+    txtbox.EdgeColor = 'k';
+    collflag = 1;
+end
+%end
+
+
+
+phiVect(1) = phiVect(1) + pi/2; % Incrementally rotate ellipse 1, 90 degrees over 20 frames
+
+pause;
+end
+
+
+fprintf('\n\nProgram End.\n\n');
+>>>>>>> 0ca17086c1fcc1eab70bcdfa4acaa86b693d06e4

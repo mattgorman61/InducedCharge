@@ -29,7 +29,7 @@ lEField = false;
 R0 = 1;
 %R = [R0,0.5*R0];
 R = R0;
-NpatchesSph = 100; % Number of patches per sphere
+NpatchesSph = 1000; % Number of patches per sphere
 numSpheres = 1; 
 Npatches = numSpheres*NpatchesSph;
 
@@ -109,13 +109,14 @@ x=x'; y=y'; z=z';
 %}
 
 %% Create Spheres
-%[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheres(R,NpatchesSph,numSpheres,dxs,dys,dzs);
+[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheres(R,NpatchesSph,numSpheres,dxs,dys,dzs);
 
 % Bad Case, Equal Angles. Hardcode so that NpatchesSph is always a perfect square
 %[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheresEquiAng(R,NpatchesSph,numSpheres,dxs,dys,dzs);
 
-% Create Ring (represents axisymmetric particle
-[x,y,z,dA,dAmat,nVect,sphereID] = F_createRing(R,NpatchesSph,numSpheres,dxs,dys,dzs);
+% Create Ring (represents axisymmetric particle) ..... UPDATE - RING DOES
+% NOT REPRESENT AXISYMMETRIC PARTICLE. FOOLISH APPROACH
+%[x,y,z,dA,dAmat,nVect,sphereID] = F_createRing(R,NpatchesSph,numSpheres,dxs,dys,dzs);
 
 
 % Plot Sphere with (or without) Normal Vectors

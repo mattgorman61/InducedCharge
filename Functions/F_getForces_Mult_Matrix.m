@@ -1,4 +1,4 @@
-function [Fnet,Fx,Fy,Fz,F0] = F_getForces_Mult_Matrix(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0)
+function [Fnet,Fx,Fy,Fz,F0] = F_getForces_Mult_Matrix(numSpheres,NpatchesSph,R,x,y,z,dA,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0)
 % PROVIDES VECTOR OF FORCES ACTING ON EACH PATCH OF THE SPHERES
 %{   
     Given:
@@ -25,7 +25,7 @@ Recall: F = qE = 1/4/pi/epsilon_0*q1*q2*r/(r^3)
 %}
 
 Npatches = length(x);
-dA = 4*pi*(R^2)/Npatches;
+% dA = 4*pi*(R^2)/Npatches;
 
 
 % Normal Vector Matrix:
@@ -40,8 +40,8 @@ end
 k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
 
 
-%{
-% NOT NEEDED! Just need to consider effect of point charge on each patch
+%%{
+% NOT NEEDED FOR A SINGLE PARTICLE! Just need to consider effect of point charge on each patch
 % Patch-to-patch location differences matrix
 % ppld(:,:,1) = x1-x1, x1-x2, x1-x3, ... 
 %               x2-x1, x2-x2, x2-x3, ... xi-xj
@@ -51,6 +51,15 @@ rpp = sqrt(ppld(:,:,1).*ppld(:,:,1) + ppld(:,:,2).*ppld(:,:,2) + ...
     ppld(:,:,3).*ppld(:,:,3));
 %}
 
+for i = 1:numSpheres
+    ppld((i-1)*NpatchesSph+1:i*NpatchesSph,(i-1)*NpatchesSph+1:i*NpatchesSph,1) = 0;
+    ppld((i-1)*NpatchesSph+1:i*NpatchesSph,(i-1)*NpatchesSph+1:i*NpatchesSph,2) = 0;
+    ppld((i-1)*NpatchesSph+1:i*NpatchesSph,(i-1)*NpatchesSph+1:i*NpatchesSph,3) = 0;
+end
+
+chargevect = sigma.*dA;
+% UNDER CONSTRUCTION:
+% Fx = ppld(:,1)./(ppld.^3) * 1/4/pi/epsilon_0 * sigma * sigma' * dA;
 
 
 % pCharge-to-patch location differences vector
@@ -65,9 +74,9 @@ rpcp = sqrt(pcpld(:,1).*pcpld(:,1) + pcpld(:,2).*pcpld(:,2) + ...
 % nVect 
 % nvx(i,:) = nvx_i, nvy_i, nvz_i (Repeat for each row i)
 
-Fx = pcpld(:,1)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma*dA;
-Fy = pcpld(:,2)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma*dA;
-Fz = pcpld(:,3)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma*dA;
+Fx = pcpld(:,1)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma.*dA;
+Fy = pcpld(:,2)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma.*dA;
+Fz = pcpld(:,3)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma.*dA;
 
 Fnet = [sum(Fx),sum(Fy),sum(Fz)];
 

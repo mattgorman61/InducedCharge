@@ -40,23 +40,7 @@ nVect = zeros(Npatches,3); % Normal Vectors
 % Fibonacci method
 gRat = (sqrt(5.0)+1.0)/2.0; % Golden Ratio
 gAng = (2.0 - gRat)*(2.0*pi);
-for n = 1:numSpheres
-for i = 1:NpatchesSph
-    lat = asin(-1.0+2.0*double(i)/(NpatchesSph+1));
-    lon = gAng*i;
-    
-    x(i+(n-1)*NpatchesSph) = R(n)*cos(lon)*cos(lat) + dxs(n);
-    y(i+(n-1)*NpatchesSph) = R(n)*sin(lon)*cos(lat) + dys(n);
-    z(i+(n-1)*NpatchesSph) = R(n)*sin(lat) + dzs(n);
-    sphereID(i+(n-1)*NpatchesSph) = n;
-    
-    % Normal Vector:
-    % nVect(i,:) = nvx_i, nvy_i, nvz_i
-    nVect(i+(n-1)*NpatchesSph,1) = (x(i+(n-1)*NpatchesSph)-dxs(n))/R(n); 
-    nVect(i+(n-1)*NpatchesSph,2) = (y(i+(n-1)*NpatchesSph)-dys(n))/R(n); 
-    nVect(i+(n-1)*NpatchesSph,3) = (z(i+(n-1)*NpatchesSph)-dzs(n))/R(n);
-end
-end
+
 
 for n = 1:numSpheres
 for i = 1:NpatchesSph

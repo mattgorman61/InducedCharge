@@ -120,7 +120,7 @@ x=x'; y=y'; z=z';
 % Plot Sphere with Normal Vectors
 if(lshowNVects)
     figure();
-    F_Plot_NormVectors(R,x,y,z,nVect);
+    F_Plot_NormVectors(R,x,y,z,nVect,lshowNVects);
 end
 
 

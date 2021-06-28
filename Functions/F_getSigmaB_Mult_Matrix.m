@@ -1,4 +1,4 @@
-function [sigma_b2,b2] = F_getSigmaB_Mult_Matrix(dAmat,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z)
+function [sigma_b2,b2] = F_getSigmaB_Mult_Matrix(numSpheres,NpatchesSph,dAmat,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z)
 % PROVIDES VECTOR OF BOUND CHARGE SURFACE DENSITIES FOR EACH PATCH
 %{   
     Given:
@@ -25,7 +25,7 @@ Npatches = length(x);
 % etc.
 nVectM = zeros(Npatches, Npatches,3);
 for i = 1:3
-nVectM(:,:,i) = repmat(nVect(:,i),1,Npatches);
+    nVectM(:,:,i) = repmat(nVect(:,i),1,Npatches);
 end
 
 k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
@@ -38,12 +38,20 @@ ppld(:,:,1) = x - x'; ppld(:,:,2) = y - y'; ppld(:,:,3) = z - z';
 rpp = sqrt(ppld(:,:,1).*ppld(:,:,1) + ppld(:,:,2).*ppld(:,:,2) + ...
     ppld(:,:,3).*ppld(:,:,3));
 
+for i = 1:numSpheres
+    ppld((i-1)*NpatchesSph+1:i*NpatchesSph,(i-1)*NpatchesSph+1:i*NpatchesSph,1) = 0;
+    ppld((i-1)*NpatchesSph+1:i*NpatchesSph,(i-1)*NpatchesSph+1:i*NpatchesSph,2) = 0;
+    ppld((i-1)*NpatchesSph+1:i*NpatchesSph,(i-1)*NpatchesSph+1:i*NpatchesSph,3) = 0;
+end
+
+
 % Dot product term of A
 M = (ppld(:,:,1).*nVectM(:,:,1) + ppld(:,:,2).*nVectM(:,:,2) + ...
     ppld(:,:,3).*nVectM(:,:,3))./(rpp.^3);
 M(isnan(M) | isinf(M)) = 0;
 
 A2 = k_bar*eye(Npatches) + k_delta/4/pi*dAmat.*M;
+
 
 % pCharge-to-patch location differences vector
 % pcpld(:,:) = x1-xpc, y1-ypc, z1-zpc
@@ -64,6 +72,5 @@ Mpc(isnan(Mpc) | isinf(Mpc)) = 0;
 
 b2 = ((1-k_bar)*eye(Npatches) - k_delta/4/pi*dAmat.*M)*sigma_f - k_delta/4/pi*pcharge*Mpc - ...
     k_delta/4/pi*(Ext_EField_x.*nVect(:,1)+ Ext_EField_y.*nVect(:,2) + Ext_EField_z.*nVect(:,3));
-
 
 sigma_b2 = A2\b2;

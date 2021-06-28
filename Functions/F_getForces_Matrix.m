@@ -76,7 +76,7 @@ Fz = pcpld(:,3)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma.*dA;
 
 Fnet = [sum(Fx),sum(Fy),sum(Fz)];
 
-F0 = (pcharge^2)/16/pi/epsilon_0/(R^2);
+F0 = (pcharge^2)/16/pi/epsilon_0/(R(1)^2);
 
 
 end

@@ -19,7 +19,7 @@ if(lpCharge)
 end
 %xlim([-2*R, 2*R]); ylim([-2*R, 2*R]); zlim([-2*R, 2*R]);
 
-%%{
+%{
 % Custom ColorMaps:
 numLevels = 100;
 cmap_cust = zeros(numLevels,3);
@@ -42,7 +42,7 @@ end
 %}
 
 
-colormap(cmap_cust);
+% colormap(cmap_cust);
 
 %}
 

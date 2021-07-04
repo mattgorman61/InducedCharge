@@ -11,7 +11,7 @@ epsilon = 1; %Unit: F/m
 % ========== Geometry ==========
 % Geometry: sphere + point charge
 Radius = 1; % Sphere radius: 100 micron
-N = 376; % Expected number of pathces (not exactly value)
+N = 4000; % Expected number of pathces (not exactly value)
 
 % Point charge
 pointchrg = -1;
@@ -108,82 +108,82 @@ net_chrg = sum(sigma);
 fprintf('Net charge is: %f\n',net_chrg);
 
 
-% % Check results
-% potential = linspace(0,0,NN)';
-% 
-% for i = 1:NN
-%     %Potential by surface charge
-%     for j = 1:NN
-%     
-%     if (i==j)
-%         continue;
-%     end
-%         
-%     dx = xc(i) - xc(j);
-%     dy = yc(i) - yc(j);
-%     dz = zc(i) - zc(j);
-% 
-%     dr2 = dx*dx + dy*dy + dz*dz;
-%     dr = sqrt(dr2);
-%     
-%     potential(i) = potential(i) + sigma(j)*DeltaArea(j)/dr/4/pi/epsilon;
-%     
-%     end
-%     
-%     %Potential by point charge
-%     dx = xc(i)-xp;
-%     dy = yc(i)-yp;
-%     dz = zc(i)-zp;
-% 
-%     dr2 = dx*dx + dy*dy + dz*dz;
-%     dr = sqrt(dr2);
-%     
-%     potential(i) = potential(i) + pointchrg/dr/4/pi/epsilon;
-%     
-% end
+% Check results
+potential = linspace(0,0,NN)';
 
-% % Compute theoratical value: From Jones, 1995.
-%     N_th = 100;
-%     N_term = 1;
-%     angle_th = linspace(0,pi,N_th)';
-%     % Coordinates of points (x,y,0)
-%     x_th = Radius*cos(angle_th)';
-%     y_th = Radius*sin(angle_th)';
-%     z_th = linspace(0,0,N_th)';
-%     potential_th = linspace(0,0,N_th)';
-%     for i = 1:N_th
-%         dx = xp-x_th(i);
-%         dy = yp-y_th(i);
-%         dz = zp-z_th(i);
-%         dr = sqrt(dx*dx+dy*dy+dz*dz);
-%         % Contribution by point charge
-%         potential_th(i) = potential_th(i)+pointchrg/4/pi/epsilon/dr;
-%         % Contribution by higher-order terms
-%         k_ratio = kappa_p/kappa_air;
-%         for j = 0:N_term
-%             % Compute coefficient A
-%             A = -(pointchrg/4/pi/epsilon)*(j*(k_ratio-1)/(j*(k_ratio+1)+1))...
-%                 *(Radius^(2*j+1))/((xp)^(j+1));
-%             % Compute Ledengre polynomials
-%             P = 0;
-%             x = cos(angle_th(i));
-%             for k = 0:j
-%                 P = P + (nchoosek(j,k)^2)*((x-1)^(j-k))*((x+1)^(k));
-%             end
-%             P = P/(2^j);
-%             potential_th(i) = potential_th(i) + A*P/(Radius^(j+1));
-%         end
-%     end
-%     
-%     % Plot potential profile of z=0 for our calculation
-%     angle = acos(xc(2936:3004)/Radius);% 2936:3004 is only for N = 6000
-%     figure(3);
-%     p1=plot(angle,potential(2936:3004),'x','Linewidth',1.5);
-%     hold on;
-%     p2=plot(angle_th,potential_th,'Linewidth',1.5);
-%     set(gca,'LineWidth',1.5);
-%     xlabel('\theta','Fontsize',14);
-%     ylabel('Potential','Fontsize',14);
-%     
-%     h=legend([p1,p2],'Our calculation','Theory','Fontsize',14);
-%     set(h,'box',' off');
+for i = 1:NN
+    %Potential by surface charge
+    for j = 1:NN
+    
+    if (i==j)
+        continue;
+    end
+        
+    dx = xc(i) - xc(j);
+    dy = yc(i) - yc(j);
+    dz = zc(i) - zc(j);
+
+    dr2 = dx*dx + dy*dy + dz*dz;
+    dr = sqrt(dr2);
+    
+    potential(i) = potential(i) + sigma(j)*DeltaArea(j)/dr/4/pi/epsilon;
+    
+    end
+    
+    %Potential by point charge
+    dx = xc(i)-xp;
+    dy = yc(i)-yp;
+    dz = zc(i)-zp;
+
+    dr2 = dx*dx + dy*dy + dz*dz;
+    dr = sqrt(dr2);
+    
+    potential(i) = potential(i) + pointchrg/dr/4/pi/epsilon;
+    
+end
+
+% Compute theoratical value: From Jones, 1995.
+    N_th = 100;
+    N_term = 1;
+    angle_th = linspace(0,pi,N_th)';
+    % Coordinates of points (x,y,0)
+    x_th = Radius*cos(angle_th)';
+    y_th = Radius*sin(angle_th)';
+    z_th = linspace(0,0,N_th)';
+    potential_th = linspace(0,0,N_th)';
+    for i = 1:N_th
+        dx = xp-x_th(i);
+        dy = yp-y_th(i);
+        dz = zp-z_th(i);
+        dr = sqrt(dx*dx+dy*dy+dz*dz);
+        % Contribution by point charge
+        potential_th(i) = potential_th(i)+pointchrg/4/pi/epsilon/dr;
+        % Contribution by higher-order terms
+        k_ratio = kappa_p/kappa_air;
+        for j = 0:N_term
+            % Compute coefficient A
+            A = -(pointchrg/4/pi/epsilon)*(j*(k_ratio-1)/(j*(k_ratio+1)+1))...
+                *(Radius^(2*j+1))/((xp)^(j+1));
+            % Compute Ledengre polynomials
+            P = 0;
+            x = cos(angle_th(i));
+            for k = 0:j
+                P = P + (nchoosek(j,k)^2)*((x-1)^(j-k))*((x+1)^(k));
+            end
+            P = P/(2^j);
+            potential_th(i) = potential_th(i) + A*P/(Radius^(j+1));
+        end
+    end
+    
+    % Plot potential profile of z=0 for our calculation
+    angle = acos(xc(2936:3004)/Radius);% 2936:3004 is only for N = 6000
+    figure(3);
+    p1=plot(angle,potential(2936:3004),'x','Linewidth',1.5);
+    hold on;
+    p2=plot(angle_th,potential_th,'Linewidth',1.5);
+    set(gca,'LineWidth',1.5);
+    xlabel('\theta','Fontsize',14);
+    ylabel('Potential','Fontsize',14);
+    
+    h=legend([p1,p2],'Our calculation','Theory','Fontsize',14);
+    set(h,'box',' off');

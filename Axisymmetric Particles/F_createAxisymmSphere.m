@@ -1,4 +1,4 @@
-function [x,y,z,dA,nVect,sphereID] = F_createAxisymmSphere_PhiSymm(R,NpatchesSph,dxs,dys,dzs,n)
+function [x,y,z,dA,nVect,sphereID] = F_createAxisymmSphere(R,NpatchesSph,dxs,dys,dzs,n)
 % PROVIDES NORMALIZED POTENTIAL ENERGY OF THE POINT CHARGE SPHERE SYSTEM
 %{   
     Given:

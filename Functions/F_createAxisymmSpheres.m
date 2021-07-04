@@ -51,26 +51,6 @@ theta = linspace(0,2*pi,numTheta);
 numPhi = NpatchesSph/numTheta;
 phi = linspace(0,pi,numPhi);
 
-% for n = 1:numAxiSpheres
-% for th = 1:numTheta
-% for ph = 1:numPhi
-%     i = (n-1)*(numTheta*numPhi) + (th-1)*numPhi + ph;
-%     R_curr = R(n) + R(n)*0.1*sin(25*phi(ph));
-%     
-%     x(i) = R_curr*cos(theta(th))*sin(phi(ph)) + dxs(n);
-%     y(i) = R_curr*sin(theta(th))*sin(phi(ph)) + dys(n);
-%     z(i) = R_curr*cos(phi(ph)) + dzs(n);
-%     sphereID(i) = n;
-%     
-%     % Normal Vector:
-%     % nVect(i,:) = nvx_i, nvy_i, nvz_i
-%      nVect(i,1) = (x(i)-dxs(n))/R_curr; 
-%      nVect(i,2) = (y(i)-dys(n))/R_curr; 
-%      nVect(i,3) = (z(i)-dzs(n))/R_curr;
-% 
-% end
-% end
-% end
 
 for n = 1:numAxiSpheres
 for th = 1:numTheta

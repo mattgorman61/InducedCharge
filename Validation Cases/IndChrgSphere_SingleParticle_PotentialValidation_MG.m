@@ -13,15 +13,15 @@ path2 = strcat(currFolder,'\..\Functions\Plots');  addpath(path2);
 
 
 % Logicals
-lshowSpheres = false;
-    lshowNVects = false;
-lshowSurfaceCharge = false;
-lshowPEResults = false; %  N/A for multiple spheres
+lshowSpheres = true;
+    lshowNVects = true;
+lshowSurfaceCharge = true;
+lshowPEResults = true; %  N/A for multiple spheres
 lshowPotentials = true;
 lshowPotentialValidation = true;
 lshowForces = false;
 
-lpCharge = true;
+lpCharge = false;
 lEField = false;
 
 
@@ -29,7 +29,7 @@ lEField = false;
 R0 = 1;
 %R = [R0,0.5*R0];
 R = R0;
-NpatchesSph = 100; % Number of patches per sphere
+NpatchesSph = 600; % Number of patches per sphere
 numSpheres = 1; 
 Npatches = numSpheres*NpatchesSph;
 
@@ -50,8 +50,8 @@ end
 dxs = [0,0,0]; dys = [0, 3*R0, 5*R0]; dzs = [0,0,0];
 
 sigma_f = zeros(Npatches,1); % Neglecting any free charges (perfect insulator?)
-k_obj = 1;
-k_air = .1;
+k_obj = 2.5;
+k_air = 1;
 k_tilda = k_obj/k_air; k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
 %epsilon_0 = 8.85*10^(-12);
 epsilon_0 = 1; % Is epsilon_0 the same as k_air?
@@ -109,13 +109,13 @@ x=x'; y=y'; z=z';
 %}
 
 %% Create Spheres
-%[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheres(R,NpatchesSph,numSpheres,dxs,dys,dzs);
+[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheres(R,NpatchesSph,numSpheres,dxs,dys,dzs);
 
 % Bad Case, Equal Angles. Hardcode so that NpatchesSph is always a perfect square
 %[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheresEquiAng(R,NpatchesSph,numSpheres,dxs,dys,dzs);
 
 % Create Ring (represents axisymmetric particle
-[x,y,z,dA,dAmat,nVect,sphereID] = F_createRing(R,NpatchesSph,numSpheres,dxs,dys,dzs);
+% [x,y,z,dA,dAmat,nVect,sphereID] = F_createRing(R,NpatchesSph,numSpheres,dxs,dys,dzs);
 
 
 % Plot Sphere with (or without) Normal Vectors
@@ -127,10 +127,10 @@ end
 
 %% CALL FUNCTIONS
 %Multiple Spheres:
-[sigma_b,b] = F_getSigmaB_Mult_Matrix(dAmat,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
+% [sigma_b,b] = F_getSigmaB_Mult_Matrix(numSpheres,NpatchesSph,dAmat,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
 
 %Single Sphere:
-%[sigma_b,b] = F_getSigmaB_Matrix(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
+[sigma_b,b] = F_getSigmaB_Matrix(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
 
 %{
 %Check if sigma_b result is the same...

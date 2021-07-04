@@ -1,4 +1,4 @@
-function [x,y,z,dA,nVect,sphereID] = F_createAxisymmSphere_PhiSymm(R,NpatchesSph,dxs,dys,dzs,n)
+function [x,y,z,dA,nVect,sphereID] = F_createAxisymmSphere_ThetaSymm(R,NpatchesSph,dxs,dys,dzs,n)
 % PROVIDES NORMALIZED POTENTIAL ENERGY OF THE POINT CHARGE SPHERE SYSTEM
 %{   
     Given:
@@ -15,8 +15,6 @@ function [x,y,z,dA,nVect,sphereID] = F_createAxisymmSphere_PhiSymm(R,NpatchesSph
     nVect................. vector of patch bound charge surface densities
     sphereID.............. vector of sphereIDs for each patch
 %}
-
-lPhiSymm = true; % Logical: determines whether symmetry is about phi or about theta
 
 Npatches = NpatchesSph;
 x = zeros(Npatches,1)';
@@ -38,8 +36,8 @@ nVect = zeros(Npatches,3); % Normal Vectors
 
 % Axisymmetric Particles
 RippleAmp = 0.25;
-alpha = 15;
-numTheta = NpatchesSph/150;
+alpha = 6;
+numTheta = NpatchesSph/30;
 theta = linspace(0,2*pi,numTheta);
 bias = 5;
 
@@ -54,7 +52,7 @@ for th = 1:numTheta
 for ph = 1:numPhi
     i = (th-1)*numPhi + ph;
 
-    R_curr = R + R*RippleAmp*sin(alpha*phi(ph)); 
+    R_curr = R + R*RippleAmp*sin(alpha*theta(th)); 
 %   R_curr = 1;
             
     x(i) = R_curr*cos(theta(th))*sin(phi(ph)) + dxs;
@@ -64,14 +62,15 @@ for ph = 1:numPhi
     
     % Normal Vector:
     % nVect(i,:) = nvx_i, nvy_i, nvz_i
-    dPhi_r = R*(RippleAmp*alpha*cos(alpha*(phi(ph))));
+    dTheta_r = R*(RippleAmp*alpha*cos(alpha*(theta(th))));
     
-    nvx = R_curr*sin(phi(ph))*cos(theta(th))*(dPhi_r*cos(phi(ph)) - R_curr*sin(phi(ph)));
-    nvy = R_curr*sin(phi(ph))*sin(theta(th))*(dPhi_r*cos(phi(ph)) - R_curr*sin(phi(ph)));
-    nvz = -R_curr*sin(phi(ph))*sin(theta(th))*(dPhi_r*sin(phi(ph)) + R_curr*cos(phi(ph)))*sin(theta(th)) + ...
-            - R_curr*sin(phi(ph))*cos(theta(th))*(dPhi_r*sin(phi(ph)) + R_curr*cos(phi(ph)))*cos(theta(th));
-        
+    nvx = -R_curr*sin(phi(ph))*(dTheta_r*sin(theta(th))*sin(phi(ph)) + R_curr*cos(theta(th))*sin(phi(ph)) );
+    nvy = R_curr*sin(phi(ph))*(dTheta_r*cos(theta(th))*sin(phi(ph)) - R_curr*sin(theta(th))*sin(phi(ph)) );
+    nvz = R_curr*sin(theta(th))*cos(phi(ph))*(dTheta_r*cos(theta(th))*sin(phi(ph)) - R_curr*sin(theta(th))*sin(phi(ph)) ) + ...
+             - R_curr*cos(theta(th))*cos(phi(ph))*(dTheta_r*sin(theta(th))*sin(phi(ph)) + R_curr*cos(theta(th))*sin(phi(ph)) );
+    
     nvMag = sqrt(nvx*nvx + nvy*nvy + nvz*nvz);
+    
     if(nvMag == 0)
         nvMag = 1;
     end

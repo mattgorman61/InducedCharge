@@ -16,7 +16,7 @@ R_vect = PCx_vect - 1;
 k_air = 1;
 k_obj = [0.1, 0.5, 1, 2.5, 10, 50];
 N = 20;
-dA = zeros(length(x));
+dA = ones(length(x)) * 4*pi*R^2/length(x);
 
 % Note: Cell Array of Colors Requires Curly Braces!
 colorsVect = {[1 0 0], [0 1 0], [0 0 1], [1 1 0], [0 1 1], [1 0 1], [0 0 0], [1 0.2 0.1], [0.2 0.1 1]};
@@ -25,10 +25,14 @@ colorsVect = {[1 0 0], [0 1 0], [0 0 1], [1 1 0], [0 1 1], [1 0 1], [0 0 0], [1 
 hold on;
 legstring2 = strings(length(PCx_vect),1);
 
-z0indices = find(abs(z)<0.05)
+z0indices = find(abs(z)<0.05);
 x0 = x(z0indices);
 y0 = y(z0indices);
 z0 = z(z0indices);
+dA0 = dA(z0indices);
+sigma0 = sigma(z0indices);
+nVect0 = nVect(z0indices);
+
 
 %{ 
 %Original: Ring Geometry
@@ -43,12 +47,12 @@ end
 %}
 
 %%{
-% Updated: extract z0 indices from sphere geometry
+% Updated: extracted z0 indices from sphere geometry
 for i = 1:length(PCx_vect)
     ii = mod(i,length(colorsVect));
     colorsVect{ii};
         
-    [phi,phi_0,phi_norm,theta] = F_getPotentials_Matrix(R,x,y,z,dA,nVect,PCx_vect(i),y_pc,z_pc,pcharge,sigma,k_air,k_obj(4),epsilon_0);
+    [phi,phi_0,phi_norm,theta] = F_getPotentials_Matrix(R,x0,y0,z0,dA0,nVect0,PCx_vect(i),y_pc,z_pc,pcharge,sigma0,k_air,k_obj(4),epsilon_0);
     scatter(theta, phi_norm, 50, colorsVect{ii} );
     legstring2(i) = ['d/R = ', ' ', num2str(R_vect(i))];
 end
@@ -85,7 +89,7 @@ for i = 1:length(PCx_vect)
     ii = mod(i,length(colorsVect));
     colorsVect{ii};
     
-    [theta_i,spherePot_i] = F_get_AnalPotentialSphere_Jones(R,pcharge,PCx_vect(i),y_pc,z_pc,k_air,k_obj(4),N);
+    [theta_i,spherePot_i] = F_get_AnalPotentialSphere_Jones(R,pcharge,PCx_vect(i),y_pc,z_pc,k_air,k_obj(4),epsilon_0,N);
     
     p_i = plot(theta_i,spherePot_i,'Color',colorsVect{ii});
     plotVect(i) = p_i;
@@ -159,6 +163,9 @@ title (title_str);
 legend(legstring2);
 %}
 
+figure;
+scatter3(x0,y0,z0,'filled','k');
+axis equal;
 
 finished = true;
 

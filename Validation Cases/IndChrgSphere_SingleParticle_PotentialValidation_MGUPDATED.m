@@ -10,10 +10,11 @@ currFolder = pwd;
 path1 = strcat(currFolder,'\..\Functions');        addpath(path1);
 path2 = strcat(currFolder,'\..\Functions\Plots');  addpath(path2);
 path3 = strcat(currFolder,'\ParticleFiles');       addpath(path3);
+addpath 'C:\Users\Matt Gorman\OneDrive\Documents\MATLAB\InducedCharge_git\Axisymmetric Particles\ParticleFiles';
 
 
 % Logicals
-<<<<<<< HEAD:Validation Cases/IndChrgSphere_SingleParticle_PotentialValidation_MGUPDATED.m
+% <<<<<<< HEAD:Validation Cases/IndChrgSphere_SingleParticle_PotentialValidation_MGUPDATED.m
 lshowSpheres = false;
     lshowNVects = false;
 lshowSurfaceCharge = false;
@@ -21,12 +22,12 @@ lshowPEResults = false; %  N/A for multiple spheres
 lshowPotentials = true;
 lshowPotentialValidation = true;
 lshowForces = false;
-=======
+% =======
 lshowNVects = true;
 lshowSurfaceCharge = true;
 lshowPEResults = false; %  N/A for multiple spheres
 lshowForceResults = true;
->>>>>>> safeSpace:Axisymmetric Particles/IndChrgAxi_Mult_Master_callFunctions_20210616.m
+% >>>>>>> safeSpace:Axisymmetric Particles/IndChrgAxi_Mult_Master_callFunctions_20210616.m
 
 lpCharge = false;
 lEField = false;
@@ -34,17 +35,17 @@ lEField = false;
 
 % Sphere and Medium Parameters
 R0 = 1;
-<<<<<<< HEAD:Validation Cases/IndChrgSphere_SingleParticle_PotentialValidation_MGUPDATED.m
+% <<<<<<< HEAD:Validation Cases/IndChrgSphere_SingleParticle_PotentialValidation_MGUPDATED.m
 %R = [R0,0.5*R0];
 R = R0;
 NpatchesSph = 1000; % Number of patches per sphere
 numSpheres = 1; 
-=======
+% =======
 R = [R0, R0, R0];
 %R = R0;
 NpatchesSph = 2000; % Number of patches per sphere
 numSpheres = 2; 
->>>>>>> safeSpace:Axisymmetric Particles/IndChrgAxi_Mult_Master_callFunctions_20210616.m
+% >>>>>>> safeSpace:Axisymmetric Particles/IndChrgAxi_Mult_Master_callFunctions_20210616.m
 Npatches = numSpheres*NpatchesSph;
 
 
@@ -124,14 +125,14 @@ quiver3(x1,y1,z1,nvx1,nvy1,nvz1,6,'r');
 axis equal;
 
 
-<<<<<<< HEAD:Validation Cases/IndChrgSphere_SingleParticle_PotentialValidation_MGUPDATED.m
+% <<<<<<< HEAD:Validation Cases/IndChrgSphere_SingleParticle_PotentialValidation_MGUPDATED.m
 % Bad Case, Equal Angles. Hardcode so that NpatchesSph is always a perfect square
 %[x,y,z,dA,dAmat,nVect,sphereID] = F_createSpheresEquiAng(R,NpatchesSph,numSpheres,dxs,dys,dzs);
 
 % Create Ring (represents axisymmetric particle) ..... UPDATE - RING DOES
 % NOT REPRESENT AXISYMMETRIC PARTICLE. FOOLISH APPROACH
 %[x,y,z,dA,dAmat,nVect,sphereID] = F_createRing(R,NpatchesSph,numSpheres,dxs,dys,dzs);
-=======
+% =======
 % Axisymm Sphere 2
 sphere2data = load('Axisymm_roughParticle2.xyz');
 x2 = sphere2data(:,1); y2 = sphere2data(:,2); z2 = sphere2data(:,3);
@@ -164,18 +165,18 @@ z = [z1; z1 + 0];
 nvz = [nvz1;nvz1];
 
 nVect = [nvx,nvy,nvz];
->>>>>>> safeSpace:Axisymmetric Particles/IndChrgAxi_Mult_Master_callFunctions_20210616.m
+% >>>>>>> safeSpace:Axisymmetric Particles/IndChrgAxi_Mult_Master_callFunctions_20210616.m
 
 
 % Plot Sphere with (or without) Normal Vectors
 if(lshowSpheres)
     figure();
-<<<<<<< HEAD:Validation Cases/IndChrgSphere_SingleParticle_PotentialValidation_MGUPDATED.m
+% <<<<<<< HEAD:Validation Cases/IndChrgSphere_SingleParticle_PotentialValidation_MGUPDATED.m
     F_Plot_NormVectors(R,x,y,z,nVect,lshowNVects);
-=======
+% =======
 %     axis equal;
     F_Plot_NormVectors(R0,x,y,z,nVect,lshowNVects);
->>>>>>> safeSpace:Axisymmetric Particles/IndChrgAxi_Mult_Master_callFunctions_20210616.m
+% >>>>>>> safeSpace:Axisymmetric Particles/IndChrgAxi_Mult_Master_callFunctions_20210616.m
 end
 
 
@@ -252,15 +253,15 @@ end
 
 if(lshowForces)
     figure();
-<<<<<<< HEAD:Validation Cases/IndChrgSphere_SingleParticle_PotentialValidation_MGUPDATED.m
+% <<<<<<< HEAD:Validation Cases/IndChrgSphere_SingleParticle_PotentialValidation_MGUPDATED.m
     F_Plot_ForceVectors(R,x,y,z,dA,nVect,x_pcs,y_pcs,z_pcs,pcharge,lpCharge,lEField,sigma_b,sigma_f,k_air,k_obj,epsilon_0);
 end
 
 
 %}
-=======
+% =======
     F_Plot_ForceVectors(R0,x,y,z,dA,nVect,x_pcs,y_pcs,z_pcs,pcharge,lpCharge,lEField,sigma_b,sigma_f,k_air,k_obj,epsilon_0);
-end
+% end
 
 
->>>>>>> safeSpace:Axisymmetric Particles/IndChrgAxi_Mult_Master_callFunctions_20210616.m
+% >>>>>>> safeSpace:Axisymmetric Particles/IndChrgAxi_Mult_Master_callFunctions_20210616.m

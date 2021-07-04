@@ -1,4 +1,4 @@
-function [Fnet,Fx,Fy,Fz,F0] = F_getForces_Mult_Matrix(numSpheres,NpatchesSph,R,x,y,z,dA,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0)
+function [Fnet,Fx,Fy,Fz,F0] = F_getForces_Mult_Matrix(numPars,NpatchesPar,R,x,y,z,dA,nVect,x_pc,y_pc,z_pc,pcharge,sigma,k_air,k_obj,epsilon_0)
 % PROVIDES VECTOR OF FORCES ACTING ON EACH PATCH OF THE SPHERES
 %{   
     Given:
@@ -34,7 +34,7 @@ Npatches = length(x);
 % etc.
 nVectM = zeros(Npatches, Npatches,3);
 for i = 1:3
-nVectM(:,:,i) = repmat(nVect(:,i),1,Npatches);
+    nVectM(:,:,i) = repmat(nVect(:,i),1,Npatches);
 end
 
 k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
@@ -51,16 +51,35 @@ rpp = sqrt(ppld(:,:,1).*ppld(:,:,1) + ppld(:,:,2).*ppld(:,:,2) + ...
     ppld(:,:,3).*ppld(:,:,3));
 %}
 
-for i = 1:numSpheres
-    ppld((i-1)*NpatchesSph+1:i*NpatchesSph,(i-1)*NpatchesSph+1:i*NpatchesSph,1) = 0;
-    ppld((i-1)*NpatchesSph+1:i*NpatchesSph,(i-1)*NpatchesSph+1:i*NpatchesSph,2) = 0;
-    ppld((i-1)*NpatchesSph+1:i*NpatchesSph,(i-1)*NpatchesSph+1:i*NpatchesSph,3) = 0;
+% CHECK HERE
+rpp(rpp<1) = 1; % Don't want to divide 0 by 0. These terms should go to 0 anyways due to 0 in numerator.
+
+% Neglect contributions from patches belonging to the same particle
+for i = 1:numPars
+    ppld((i-1)*NpatchesPar+1:i*NpatchesPar,(i-1)*NpatchesPar+1:i*NpatchesPar,1) = 0;
+    ppld((i-1)*NpatchesPar+1:i*NpatchesPar,(i-1)*NpatchesPar+1:i*NpatchesPar,2) = 0;
+    ppld((i-1)*NpatchesPar+1:i*NpatchesPar,(i-1)*NpatchesPar+1:i*NpatchesPar,3) = 0;
+%     rpp((i-1)*NpatchesSph+1:i*NpatchesSph,(i-1)*NpatchesSph+1:i*NpatchesSph) = 0;
 end
 
 chargevect = sigma.*dA;
-% UNDER CONSTRUCTION:
-% Fx = ppld(:,1)./(ppld.^3) * 1/4/pi/epsilon_0 * sigma * sigma' * dA;
 
+chgvectSq = chargevect*chargevect';
+
+fxTemp = ppld(:,1)./(rpp.^3).*chgvectSq * 1/4/pi/epsilon_0;
+fxTemp(isnan(fxTemp) | isinf(fxTemp) | rpp < 1) = 0;
+% fxTemp(isnan(fxTemp) | isinf(fxTemp) ) = 0;
+Fx = sum(fxTemp)';
+
+fyTemp = ppld(:,2)./(rpp.^3).*chgvectSq * 1/4/pi/epsilon_0;
+fyTemp(isnan(fyTemp) | isinf(fyTemp) | rpp < 1) = 0;
+% fyTemp(isnan(fxTemp) | isinf(fxTemp) ) = 0;
+Fy = sum(fyTemp)';
+
+fzTemp = ppld(:,3)./(rpp.^3).*chgvectSq * 1/4/pi/epsilon_0;
+fzTemp(isnan(fzTemp) | isinf(fzTemp) | rpp < 1) = 0;
+% fzTemp(isnan(fxTemp) | isinf(fxTemp) ) = 0;
+Fz = sum(fzTemp)';
 
 % pCharge-to-patch location differences vector
 % pcpld(:,:) = x1-xpc, y1-ypc, z1-zpc
@@ -71,16 +90,20 @@ pcpld(:,1) = x-x_pc; pcpld(:,2) = y-y_pc; pcpld(:,3) = z-z_pc;
 rpcp = sqrt(pcpld(:,1).*pcpld(:,1) + pcpld(:,2).*pcpld(:,2) + ...
     pcpld(:,3).*pcpld(:,3));
 
-% nVect 
-% nvx(i,:) = nvx_i, nvy_i, nvz_i (Repeat for each row i)
 
-Fx = pcpld(:,1)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma.*dA;
-Fy = pcpld(:,2)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma.*dA;
-Fz = pcpld(:,3)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma.*dA;
+Fx = Fx + pcpld(:,1)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma.*dA;
+Fy = Fy + pcpld(:,2)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma.*dA;
+Fz = Fz + pcpld(:,3)./(rpcp.^3) * 1/4/pi/epsilon_0 * pcharge .*sigma.*dA;
 
-Fnet = [sum(Fx),sum(Fy),sum(Fz)];
+Fnet = zeros(numPars,3);
+for i = 1:numPars
+    Fnet(i,:) = [sum(Fx((i-1)*NpatchesPar+1:i*NpatchesPar)),sum(Fy((i-1)*NpatchesPar+1:i*NpatchesPar)),sum(Fz((i-1)*NpatchesPar+1:i*NpatchesPar))];
+end
 
-F0 = (pcharge^2)/16/pi/epsilon_0/(R^2);
-
+if (pcharge == 0)
+    F0 = (100^2)/16/pi/epsilon_0/(R^2);
+else
+    F0 = (pcharge^2)/16/pi/epsilon_0/(R^2);
+end
 
 end

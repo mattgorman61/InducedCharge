@@ -1,19 +1,20 @@
 clear;
 clc;
+close all;
 
 % =========================================================================
 % Fundamental settings
-filename = 'a4b1c1_1408_2812.mat'; % Geometry: Axisymmetric ellipsoid
+filename = 'a2b1c1_784_1564.mat'; % Geometry: Axisymmetric ellipsoid
 npars = 2;%4;
-dt = 0.1;%0.064; %5E-3; %1E-3
-itmax = 1; % 10000
+dt = 0.001;%0.064; %5E-3; %1E-3
+itmax = 2; % 10000
 thickness = 0.05; % Preset gap in collision detection
 
-% ========== Dimensional Paraneters in Physical Space ==========
+% ========== Dimensional Parameters in Physical Space ==========
 Density_Phy = 2500; % Unit: [kg/m^3]
-sigma_Phy = 0;%6.4E-6; % Unit: [C/m2]
+sigma_Phy = 1e-7;%6.4E-6; % Unit: [C/m2]
 Elastic_Phy = 1E9;%3.05E4;%1.77E8; % Unit: Pa
-Ex_Phy = 4E4; % Field strength: V/m
+Ex_Phy = 0; % Field strength: V/m   4E4
 Ey_Phy = 0; % Field strength: V/m
 Ez_Phy = 0; % Field strength: V/m
 Elastic_Original = 1E9; % Unit: Pa % Original elastic modulus
@@ -56,7 +57,7 @@ Ey = Ey_Phy*epsilon/sigma_null;
 Ez = Ez_Phy*epsilon/sigma_null;
 
 % Location
-xpar = 0:2.2:(npars-1)*2.2;%[2.12,-2.11,-2.11,2.11];%linspace(0,0,npars); % size=1*npars
+xpar = 0:4.2:(npars-1)*4.2;%[2.12,-2.11,-2.11,2.11];%linspace(0,0,npars); % size=1*npars
 ypar = linspace(0,0,npars);%[1.32,1.31,-1.31,-1.31];%[-1,1];
 zpar = linspace(0,0,npars);%[-1,1];
 rpar = [xpar;ypar;zpar]'; % size=npars*3

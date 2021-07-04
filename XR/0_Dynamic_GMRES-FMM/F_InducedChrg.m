@@ -1,8 +1,7 @@
 function [sigma,E_pat,sig_b] = F_InducedChrg(npars,sigma_f_scalar,...
     kappa_air,kappa_p,DeltaArea,NN,x_pat,y_pat,z_pat,NormVec_IF,...
     Ex,Ey,Ez,sig_b)
-%UNTITLED 此处显示有关此函数的摘要
-%   此处显示详细说明
+
     lgmres = 1;
     SimpleCount = 0;
     

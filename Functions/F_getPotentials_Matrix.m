@@ -56,7 +56,16 @@ ppld = zeros(Npatches,Npatches,3);
 ppld(:,:,1) = x - x'; ppld(:,:,2) = y - y'; ppld(:,:,3) = z - z';
 rpp = sqrt(ppld(:,:,1).*ppld(:,:,1) + ppld(:,:,2).*ppld(:,:,2) + ...
     ppld(:,:,3).*ppld(:,:,3));
+
+chargevect = sigma.*dA;
+chgMat = repmat(chargevect,1,length(chargevect));
+
+phi = 1/4/pi/epsilon_0 .* chgMat ./rpp;
+phi(isnan(phi) | isinf(phi)) = 0;
+phi = sum(phi)';
 %}
+
+phi = zeros(length(dA),1);
 
 %%%%%%%%%%%
 % NEED TO CALCULATE FORCE OF SPHERES ON EACHOTHER.
@@ -76,7 +85,8 @@ rpcp = sqrt(pcpld(:,1).*pcpld(:,1) + pcpld(:,2).*pcpld(:,2) + ...
 % nVect 
 % nvx(i,:) = nvx_i, nvy_i, nvz_i (Repeat for each row i)
 
-phi = 1/4/pi/epsilon_0 * pcharge ./rpcp;
+phi = phi + 1/4/pi/epsilon_0 * pcharge ./rpcp;
+% phi_0 = 1/4/pi/epsilon_0 * abs(pcharge) ./R;
 phi_0 = 1/4/pi/epsilon_0 * abs(pcharge) ./R;
 phi_norm = phi./phi_0;
 

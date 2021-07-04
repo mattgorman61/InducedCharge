@@ -1,4 +1,4 @@
-function [finished] = F_Plot_ForceVectors(numSpheres,NpatchesSph,R,x,y,z,dA,nVect,x_pcs,y_pcs,z_pcs,pcharge,lpCharge,lEField,sigma_b,sigma_f,k_air,k_obj,epsilon_0)
+function [finished] = F_Plot_ForceVectors(numSpheres,NpatchesSph,R,x,y,z,dA,nVect,x_pcs,y_pcs,z_pcs,dxs,dys,dzs,pcharge,lpCharge,lEField,sigma_b,sigma_f,k_air,k_obj,epsilon_0)
 % DISPLAYS FORCE VECTORS ON EACH PATCH
 %   
 
@@ -49,19 +49,36 @@ end
 %}
 
 colorbar;
-axis square;    
-tit2 = title('Force Vectors'); tit2.FontSize = 12; 
-tit2.FontName = 'Times New Roman';
-view(35,20);
+quiver3(x,y,z,Fx,Fy,Fz,5,'r');
+hold on;
+q1 = quiver3(dxs(1),dys(1),dzs(1),Fnet(1,1)/F0,Fnet(1,2)/F0,Fnet(1,3)/F0,80,'k');
+q1.MaxHeadSize = 2;
+hold on;
+if(numSpheres>1)
+    q2 = quiver3(dxs(2),dys(2),dzs(2),Fnet(2,1)/F0,Fnet(2,2)/F0,Fnet(2,3)/F0,80,'k');
+    q2.MaxHeadSize = 2;
+end
+grid on; box on;
 
-quiver3(x,y,z,Fx/F0,Fy/F0,Fz/F0,3,'b');
-q = quiver3(0,0,0,Fnet(1)/F0,Fnet(2)/F0,Fnet(3)/F0,3,'k');
-q.MaxHeadSize = 2;
-axis equal; 
+for i = 1:numSpheres
+    fprintf('\nForces on Particle %d:\n', i);
+    fprintf('\tFx: %.4f \n',Fnet(i,1));
+    fprintf('\tFy: %.4f \n',Fnet(i,2));
+    fprintf('\tFz: %.4f \n',Fnet(i,3));
+    fprintf('\n\n');
+end 
+
+
 if(lpCharge)
     legend('Point Charge','Surface Bound Charges','Patch Forces','Net Force','Location','southeast');
 else
     legend('Surface Bound Charges','Patch Forces','Net Force','Location','southeast')
+end
+
+hold on;
+tit2 = title('Force Vectors'); tit2.FontSize = 12; 
+tit2.FontName = 'Times New Roman';
+view(35,20);
 
 finished = true;
 

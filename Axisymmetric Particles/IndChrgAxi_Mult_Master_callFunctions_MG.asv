@@ -26,7 +26,7 @@ R0 = 1;
 R = [R0, R0, R0];
 %R = R0;
 NpatchesSph = 3000; % Number of patches per sphere
-numSpheres = 2; 
+numSpheres = 1; 
 Npatches = numSpheres*NpatchesSph;
 
 
@@ -67,10 +67,10 @@ nVect = zeros(Npatches,3);
 
 for n = 1:numSpheres
 
-%     [x_n,y_n,z_n,dA_n,nVect_n,sphereID_n] = F_createAxisymmSphere(R(n),NpatchesSph,dxs(n),dys(n),dzs(n),n);
-    [x_n,y_n,z_n,dA_n,nVect_n,sphereID_n] = F_createAxisymmSphere_ThetaSymm(R(n),NpatchesSph,dxs(n),dys(n),dzs(n),n);
-%     [x_n,y_n,z_n,dA_n,dAmat,nVect_n,sphereID_n] = F_createSingSphere(R(n),NpatchesSph,dxs(n),dys(n),dzs(n),n);
+    [x_n,y_n,z_n,dA_n,nVect_n,sphereID_n] = F_createAxisymmSphere(R(n),NpatchesSph,dxs(n),dys(n),dzs(n),n);
+        [x_n,y_n,z_n,dA_n,nVect_n,sphereID_n] = F_createAxisymmSphere(R(n),NpatchesSph,dxs(n),dys(n),dzs(n),n);
 
+%     [x_n,y_n,z_n,dA_n,dAmat,nVect_n,sphereID_n] = F_createSingSphere(R(n),NpatchesSph,dxs(n),dys(n),dzs(n),n);
     x((n-1)*NpatchesSph + 1: n*NpatchesSph) = x_n;
     y((n-1)*NpatchesSph + 1: n*NpatchesSph) = y_n;
     z((n-1)*NpatchesSph + 1: n*NpatchesSph) = z_n;

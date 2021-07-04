@@ -25,7 +25,8 @@ Npatches = length(x);
 % etc.
 nVectM = zeros(Npatches, Npatches,3);
 for i = 1:3
-    nVectM(:,:,i) = repmat(nVect(:,i),1,Npatches);
+    tempMat = repmat(nVect(:,i),1,Npatches);
+    nVectM(:,:,i) = tempMat;
 end
 
 k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);

@@ -25,7 +25,7 @@ lEField = false;
 R0 = 1;
 R = [R0, R0, R0];
 %R = R0;
-NpatchesSph = 3000; % Number of patches per sphere
+NpatchesSph = 300; % Number of patches per sphere
 numSpheres = 1; 
 Npatches = numSpheres*NpatchesSph;
 
@@ -64,13 +64,15 @@ y = zeros(Npatches,1);
 z = zeros(Npatches,1);
 dA = zeros(Npatches,1);
 nVect = zeros(Npatches,3);
+nvMags = zeros(Npatches,1);
 
 for n = 1:numSpheres
 
-    [x_n,y_n,z_n,dA_n,nVect_n,sphereID_n] = F_createAxisymmSphere(R(n),NpatchesSph,dxs(n),dys(n),dzs(n),n);
-        [x_n,y_n,z_n,dA_n,nVect_n,sphereID_n] = F_createAxisymmSphere(R(n),NpatchesSph,dxs(n),dys(n),dzs(n),n);
-
 %     [x_n,y_n,z_n,dA_n,dAmat,nVect_n,sphereID_n] = F_createSingSphere(R(n),NpatchesSph,dxs(n),dys(n),dzs(n),n);
+%     [x_n,y_n,z_n,dA_n,nVect_n,sphereID_n] = F_createAxisymmSphere(R(n),NpatchesSph,dxs(n),dys(n),dzs(n),n);
+%     [x_n,y_n,z_n,dA_n,nVect_n,nvMags_n,sphereID_n] = F_createAxisymmSphere_ThetaSymm(R(n),NpatchesSph,dxs(n),dys(n),dzs(n),n);
+%     [x_n,y_n,z_n,dA_n,nVect_n,sphereID_n] = F_createAxisymmSphere_PhiSymm(R(n),NpatchesSph,dxs(n),dys(n),dzs(n),n);
+
     x((n-1)*NpatchesSph + 1: n*NpatchesSph) = x_n;
     y((n-1)*NpatchesSph + 1: n*NpatchesSph) = y_n;
     z((n-1)*NpatchesSph + 1: n*NpatchesSph) = z_n;
@@ -78,6 +80,8 @@ for n = 1:numSpheres
     nVect((n-1)*NpatchesSph + 1: n*NpatchesSph,1) = nVect_n(:,1);
     nVect((n-1)*NpatchesSph + 1: n*NpatchesSph,2) = nVect_n(:,2);
     nVect((n-1)*NpatchesSph + 1: n*NpatchesSph,3) = nVect_n(:,3);
+%     nvMags((n-1)*NpatchesSph + 1: n*NpatchesSph) = nvMags_n;
+    
 end
 
 dAmat = repmat(dA',Npatches,1);
@@ -88,6 +92,14 @@ if(lshowNVects)
 %     axis equal;
     F_Plot_NormVectors(R0,x,y,z,nVect,lshowNVects);
 end
+a = 1;
+b = 1;
+c = 1;
+p = [x,y,z];
+nvMags = sqrt(nVect(:,1).*nVect(:,1) + nVect(:,2).*nVect(:,2) + nVect(:,3).*nVect(:,3));
+save('AxisymmPar_PhiSymm_300','dA','a','b','c','p','nVect' );
+
+% xc,yc,zc,DeltaArea,N,NormVec,a,b,c
 
 %% CALL FUNCTIONS
 %Multiple Spheres:

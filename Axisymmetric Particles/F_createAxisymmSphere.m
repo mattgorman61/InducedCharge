@@ -37,8 +37,10 @@ dA = zeros(Npatches,1);
 nVect = zeros(Npatches,3); % Normal Vectors
 
 % Axisymmetric Particles
-RippleAmp = 0.25;
+RippleAmpPh = 0.25;
+RippleAmpTh = 0.25;
 alpha = 15;
+beta = 15;
 numTheta = NpatchesSph/150;
 theta = linspace(0,2*pi,numTheta);
 bias = 5;
@@ -54,7 +56,7 @@ for th = 1:numTheta
 for ph = 1:numPhi
     i = (th-1)*numPhi + ph;
 
-    R_curr = R + R*RippleAmp*sin(alpha*phi(ph)); 
+    R_curr = R*(1 + RippleAmpPh*sin(alpha*phi(ph)))*(1 + RippleAmpTh*sin(beta*theta(th))); 
 %   R_curr = 1;
             
     x(i) = R_curr*cos(theta(th))*sin(phi(ph)) + dxs;
@@ -64,7 +66,7 @@ for ph = 1:numPhi
     
     % Normal Vector:
     % nVect(i,:) = nvx_i, nvy_i, nvz_i
-    dPhi_r = R*(RippleAmp*alpha*cos(alpha*(phi(ph))));
+    dPhi_r = R*(RippleAmpPh*alpha*cos(alpha*(phi(ph))));
     
     nvx = R_curr*sin(phi(ph))*cos(theta(th))*(dPhi_r*cos(phi(ph)) - R_curr*sin(phi(ph)));
     nvy = R_curr*sin(phi(ph))*sin(theta(th))*(dPhi_r*cos(phi(ph)) - R_curr*sin(phi(ph)));

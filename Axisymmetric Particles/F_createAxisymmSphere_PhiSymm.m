@@ -37,14 +37,17 @@ dA = zeros(Npatches,1);
 nVect = zeros(Npatches,3); % Normal Vectors
 
 % Axisymmetric Particles
-RippleAmp = 0.25;
-alpha = 15;
-numTheta = NpatchesSph/150;
-theta = linspace(0,2*pi,numTheta);
+buffer = 0.15;
+RippleAmp = 0;
+alpha = 6;
+numTheta = NpatchesSph/10;
+theta = linspace(0+buffer,2*pi-buffer,numTheta);
 bias = 5;
 
+
+
 numPhi = NpatchesSph/numTheta;
-phi = [F_createVector_bias(1/bias,numPhi/2,pi/2); pi/2 + F_createVector_bias(bias,numPhi/2,pi/2)];
+phi = [F_createVector_bias(1/bias,numPhi/2,pi/2 - buffer) + buffer; pi/2 + F_createVector_bias(bias,numPhi/2,pi/2 - buffer)];
 % phi = [F_createVector_bias(1/bias,numPhi/2,pi/2); pi/2 + F_createVector_bias(bias,numPhi/2,pi/2)];
 
 figure;
@@ -82,10 +85,16 @@ for ph = 1:numPhi
 %      nVect(i,2) = (y(i)-dys)/R_curr; 
 %      nVect(i,3) = (z(i)-dzs)/R_curr;
 
-    nVect(i,1) = -nvx/real(nvMag);
-    nVect(i,2) = -nvy/real(nvMag);
-    nVect(i,3) = -nvz/real(nvMag);     
-     
+    if(nvMag == 0)
+        nVect(i,1) = (x(i)-dxs)/R_curr; 
+        nVect(i,2) = (y(i)-dys)/R_curr; 
+        nVect(i,3) = (z(i)-dzs)/R_curr;
+    else
+        nVect(i,1) = -nvx/real(nvMag);
+        nVect(i,2) = -nvy/real(nvMag);
+        nVect(i,3) = -nvz/real(nvMag);    
+    end
+
     % dA:
      dA(i) = R_curr*2*pi/numTheta * R_curr*pi/numPhi; 
 

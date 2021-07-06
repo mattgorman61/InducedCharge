@@ -85,6 +85,7 @@ for i = 1:NpatchesEll
     nVect(i,2) = yy/b^2/denom;
 end
 
+% nVect = nVect';
 
 % Find dA
 p = 1.6075;

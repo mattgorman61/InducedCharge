@@ -4,7 +4,8 @@ close all;
 
 % =========================================================================
 % Fundamental settings
-filename = 'a2b1c1_784_1564.mat'; % Geometry: Axisymmetric ellipsoid
+% filename = 'AxisymmPar_PhiSymm_300.mat'; % Geometry File
+filename = 'Sphere_300.mat'; % Geometry File
 npars = 2;%4;
 dt = 0.001;%0.064; %5E-3; %1E-3
 itmax = 2; % 10000
@@ -105,7 +106,7 @@ Eps3rateold = zeros(npars,1);
 Etarateold = zeros(npars,1);
 
 % Read patch info
-[x_rel,y_rel,z_rel,DeltaArea,NN,NormVec,a,b,c]=F_GeometryEllip(filename);
+[x_rel,y_rel,z_rel,DeltaArea,NN,NormVec,a,b,c]=F_GeometryAxiSphere(filename);
 mass = 4/3*rhop*pi*a*b*c; % particle mass
 Ixpf = mass*(b^2+c^2)/5; % moment of inertia in particle frame
 Iypf = mass*(a^2+c^2)/5; % moment of inertia in particle frame

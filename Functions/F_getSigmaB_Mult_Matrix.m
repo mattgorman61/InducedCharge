@@ -24,10 +24,10 @@ Npatches = length(x);
 % nVectM(:,;,2) = nVY1, nVY2, nVY3, ... (repeated for each row)
 % etc.
 nVectM = zeros(Npatches, Npatches,3);
-for i = 1:3
-    tempMat = repmat(nVect(:,i),1,Npatches);
-    nVectM(:,:,i) = tempMat;
-end
+% for i = 1:3
+%     tempMat = repmat(nVect(:,i),1,Npatches);
+%     nVectM(:,:,i) = tempMat;
+% end
 
 k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
 

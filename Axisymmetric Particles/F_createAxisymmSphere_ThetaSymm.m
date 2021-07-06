@@ -1,4 +1,4 @@
-function [x,y,z,dA,nVect,sphereID] = F_createAxisymmSphere_ThetaSymm(R,NpatchesSph,dxs,dys,dzs,n)
+function [x,y,z,dA,nVect,nvMags,sphereID] = F_createAxisymmSphere_ThetaSymm(R,NpatchesSph,dxs,dys,dzs,n)
 % PROVIDES NORMALIZED POTENTIAL ENERGY OF THE POINT CHARGE SPHERE SYSTEM
 %{   
     Given:
@@ -15,6 +15,9 @@ function [x,y,z,dA,nVect,sphereID] = F_createAxisymmSphere_ThetaSymm(R,NpatchesS
     nVect................. vector of patch bound charge surface densities
     sphereID.............. vector of sphereIDs for each patch
 %}
+
+
+% NEED TO FIX! POLES AREN'T A SINGLE POINT: NEED 
 
 Npatches = NpatchesSph;
 x = zeros(Npatches,1)';
@@ -35,11 +38,12 @@ dA = zeros(Npatches,1);
 nVect = zeros(Npatches,3); % Normal Vectors
 
 % Axisymmetric Particles
-RippleAmp = 0.25;
-alpha = 6;
+RippleAmp = 0.15;
+alpha = 2;
+buffer = 0.01; % To avoid division by 0
 numTheta = NpatchesSph/30;
-theta = linspace(0,2*pi,numTheta);
-bias = 5;
+theta = linspace(0 + buffer,2*pi - buffer,numTheta);
+bias = 1;
 
 numPhi = NpatchesSph/numTheta;
 phi = [F_createVector_bias(1/bias,numPhi/2,pi/2); pi/2 + F_createVector_bias(bias,numPhi/2,pi/2)];
@@ -47,7 +51,9 @@ phi = [F_createVector_bias(1/bias,numPhi/2,pi/2); pi/2 + F_createVector_bias(bia
 
 figure;
 scatter(phi,zeros(length(phi),1));
+nvMags = zeros(length(x),1);
 
+debuglist = [];
 for th = 1:numTheta
 for ph = 1:numPhi
     i = (th-1)*numPhi + ph;
@@ -69,22 +75,33 @@ for ph = 1:numPhi
     nvz = R_curr*sin(theta(th))*cos(phi(ph))*(dTheta_r*cos(theta(th))*sin(phi(ph)) - R_curr*sin(theta(th))*sin(phi(ph)) ) + ...
              - R_curr*cos(theta(th))*cos(phi(ph))*(dTheta_r*sin(theta(th))*sin(phi(ph)) + R_curr*cos(theta(th))*sin(phi(ph)) );
     
+         
     nvMag = sqrt(nvx*nvx + nvy*nvy + nvz*nvz);
+    nvMags(i) = nvMag;
     
-    if(nvMag == 0)
-        nvMag = 1;
+    %DEBUG
+    if (nvMag == 0)
+        fprintf('i = %f \n',i);
+        fprintf('  nvx = %.4g \n', nvx);
+        fprintf('  nvy = %.4g \n', nvy);
+        fprintf('  nvz = %.4g \n\n', nvz);
     end
-    
-    
+     
+ 
     % INCORRECT!!!!! ONLY FOR SPHERES
 %      nVect(i,1) = (x(i)-dxs)/R_curr; 
 %      nVect(i,2) = (y(i)-dys)/R_curr; 
 %      nVect(i,3) = (z(i)-dzs)/R_curr;
 
-    nVect(i,1) = -nvx/real(nvMag);
-    nVect(i,2) = -nvy/real(nvMag);
-    nVect(i,3) = -nvz/real(nvMag);     
-     
+    if(nvMag == 0)
+         nVect(i,1) = (x(i)-dxs)/R_curr; 
+         nVect(i,2) = (y(i)-dys)/R_curr; 
+         nVect(i,3) = (z(i)-dzs)/R_curr;
+    else
+        nVect(i,1) = -nvx/real(nvMag);
+        nVect(i,2) = -nvy/real(nvMag);
+        nVect(i,3) = -nvz/real(nvMag);    
+    end
     % dA:
      dA(i) = R_curr*2*pi/numTheta * R_curr*pi/numPhi; 
 

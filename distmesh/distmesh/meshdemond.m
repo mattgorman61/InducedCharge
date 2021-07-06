@@ -2,13 +2,14 @@ function meshdemond
 %MESHDEMOND distmeshnd examples.
 
 %   Copyright (C) 2004-2012 Per-Olof Persson. See COPYRIGHT.TXT for details.
+clear all; close all; clc;
 
 rand('state',1); % Always the same results
 set(gcf,'rend','opengl');
 
 disp('(9) 3-D Unit ball')
 fd=inline('sqrt(sum(p.^2,2))-1','p');
-[p,t]=distmeshnd(fd,@huniform,0.2,[-1,-1,-1;1,1,1],[]);
+[p,t]=distmeshnd(fd,@huniform,0.5,[-1,-1,-1;1,1,1],[]);
 post(p,t)
 
 disp('(10) Cylinder with hole')

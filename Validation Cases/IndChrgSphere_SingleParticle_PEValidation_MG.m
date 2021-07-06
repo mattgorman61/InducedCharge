@@ -13,11 +13,11 @@ path2 = strcat(currFolder,'\..\Functions\Plots');  addpath(path2);
 
 
 % Logicals
-lshowSpheres = true;
+lshowSpheres = false;
     lshowNVects = false;
 lshowSurfaceCharge = true;
-lshowPEResults = false; %  N/A for multiple spheres
-lshowForceResults = false;
+lshowPEResults = true; %  N/A for multiple spheres
+lshowForceResults = true;
 
 lpCharge = true;
 lEField = false;
@@ -27,7 +27,7 @@ lEField = false;
 R0 = 1;
 %R = [R0,0.5*R0];
 R = R0;
-NpatchesSph = 200; % Number of patches per sphere
+NpatchesSph = 1200; % Number of patches per sphere
 numSpheres = 1; 
 Npatches = numSpheres*NpatchesSph;
 
@@ -121,7 +121,7 @@ end
 
 %% CALL FUNCTIONS
 %Multiple Spheres:
-[sigma_b,b] = F_getSigmaB_Mult_Matrix(dAmat,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
+[sigma_b,b] = F_getSigmaB_Mult_Matrix(numSpheres,NpatchesSph,dAmat,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);
 
 %Single Sphere:
 %[sigma_b,b] = F_getSigmaB_Matrix(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,k_air,k_obj,Ext_EField_x,Ext_EField_y,Ext_EField_z);

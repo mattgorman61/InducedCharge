@@ -59,7 +59,7 @@ function [sigma,E_pat,sig_b] = F_InducedChrg(npars,sigma_f_scalar,...
     E_f = real(E_f); %keep the real part
     % Projection of E_f on the normal direction
     En_f = E_f(:,1).*NormVec_Long(:,1)+E_f(:,2).*NormVec_Long(:,2)+E_f(:,3).*NormVec_Long(:,3);
-    bVec = (1-k_ave)*sig_f-k_diff*En_f;
+    bVec = (1-k_ave)*sig_f-k_diff*En_f; % RHS of A(sigma) = b
 
     % (2)GMRES iteration
     V = zeros(NN_tot); % Store the bases of Krylov subspace
@@ -116,7 +116,7 @@ function [sigma,E_pat,sig_b] = F_InducedChrg(npars,sigma_f_scalar,...
         
         if ((i==(NN_tot-1))&&(rel_err>(1E-4)))
             fprintf('Waring: GMRES does not converge at maximum iteration\n');
-            fpringf('Info: i = %d, rel_err = %f\n',i,rel_err);
+            fprintf('Info: i = %d, rel_err = %f\n',i,rel_err);
             pause(10);
         end
         

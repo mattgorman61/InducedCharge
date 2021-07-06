@@ -27,7 +27,7 @@ lEField = false;
 R0 = 1;
 %R = [R0,0.5*R0];
 R = R0;
-NpatchesSph = 2000; % Number of patches per sphere
+NpatchesSph = 1200; % Number of patches per sphere
 numSpheres = 1; 
 Npatches = numSpheres*NpatchesSph;
 
@@ -175,8 +175,7 @@ end
 
 if(lshowForceResults)
     figure();
-    F_Plot_ForceVectors(numSpheres,NpatchesSph,R,x,y,z,dA,nVect,x_pcs,y_pcs,z_pcs,pcharge,lpCharge,lEField,sigma_b,sigma_f,k_air,k_obj,epsilon_0);
-%                         numSpheres,NpatchesSph,R,x,y,z,dA,nVect,x_pcs,y_pcs,z_pcs,dxs,dys,dzs,pcharge,lpCharge,lEField,sigma_b,sigma_f,k_air,k_obj,epsilon_0
+    F_Plot_ForceVectors(numSpheres,R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,lpCharge,lEField,sigma_b,sigma_f,k_air,k_obj,epsilon_0);
 end
 
 %}

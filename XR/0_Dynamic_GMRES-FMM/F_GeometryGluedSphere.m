@@ -1,4 +1,4 @@
-function [xc,yc,zc,DeltaArea,N,NormVec,a,b,c] = F_GeometryAxiSphere(filename)
+function [xc,yc,zc,DeltaArea,N,NormVec,a,b,c] = F_GeometryGluedSphere(filename)
 %UNTITLED2 此处显示有关此函数的摘要
 %   此处显示详细说明
     

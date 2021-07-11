@@ -12,10 +12,10 @@ function [xc,yc,zc,DeltaArea,N,NormVec,a,b,c] = F_GeometryAxiSphere(filename)
     yc = p(:,2);
     zc = p(:,3);
     
-%     figure;
-%     scatter3(xc,yc,zc,'filled','k');
-%     view(20,5);
-%     axis equal; box on; grid on;
+    figure;
+    scatter3(xc,yc,zc,'filled','k');
+    view(20,5);
+    axis equal; box on; grid on;
 %     pause;
     
     N = length(xc);

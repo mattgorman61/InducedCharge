@@ -1,23 +1,31 @@
-clear;
-clc;
-close all;
+clear all; close all; clc;
+
+% gap = [10,9,8,7,6,5,4,3,2,1,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0.09,0.08,...
+%    0.07,0.06,0.05,0.04,0.03];
+gap  = [10,9,8,7,6,5,4,3,2,1,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.25];
+% gap = [100,90,80,70,60,50,40,30,20];
+U_save = zeros(length(gap),1);
+U_self = zeros(length(gap),1);
+U_save_mg = zeros(length(gap),1);
+Fdim_save_mg = zeros(length(gap),1);
+
+for ll = 1:length(gap)
 
 % =========================================================================
 % Fundamental settings
-% filename = 'AxisymmPar_PhiSymm_300.mat'; % Geometry File
-filename = 'Par_distmesh_2088.mat'; % Geometry File
-npars = 2;%4;
-dt = 0.001;%0.064; %5E-3; %1E-3
-itmax = 2; % 10000
-thickness = 0.05; % Preset gap in collision detection
+filename = 'Par_distmesh_2088.mat'; % Geometry: Axisymmetric ellipsoid
+npars = 2;%2;%4;
+dt = 0.1;%0.064; %5E-3; %1E-3
+itmax = 1; % 10000
+thickness = 0.0; % Preset gap in collision detection
 
-% ========== Dimensional Parameters in Physical Space ==========
+% ========== Dimensional Paraneters in Physical Space ==========
 Density_Phy = 2500; % Unit: [kg/m^3]
-sigma_Phy = 1e-7;%6.4E-6; % Unit: [C/m2]
+sigma_Phy = 6.4E-6; % Unit: [C/m2]
 Elastic_Phy = 1E9;%3.05E4;%1.77E8; % Unit: Pa
-Ex_Phy = 0; % Field strength: V/m   4E4
-Ey_Phy = 0; % Field strength: V/m
-Ez_Phy = 0; % Field strength: V/m
+Ex_Phy = 0; % Field strength: V/m
+Ey_Phy = 0;%1E5; % Field strength: V/m
+Ez_Phy = 0;%1E5; % Field strength: V/m
 Elastic_Original = 1E9; % Unit: Pa % Original elastic modulus
 %
 erest = 0.7; % Restitution coefficient
@@ -42,7 +50,7 @@ t_null = L_null/U_null; % Time scale
 
 Elastic = Elastic_Phy/p_null;
 rhop = Density_Phy/rho_null; % particle density
-sigma_f_scalar = linspace(1,1,npars)*sigma_Phy/sigma_null;% Surface free charge density %[0,0]
+sigma_f_scalar = [1,-1];%*sigma_Phy/sigma_null;% Surface free charge density %[0,0]
 EScoeff = sigma_null^2/epsilon/rho_null/U_null/U_null; % Coefficient to 
 % convert dimensionless ES force to dimensionless inertia force
 
@@ -58,10 +66,10 @@ Ey = Ey_Phy*epsilon/sigma_null;
 Ez = Ez_Phy*epsilon/sigma_null;
 
 % Location
-xpar = 0:2.15:(npars-1)*2.15;%[2.12,-2.11,-2.11,2.11];%linspace(0,0,npars); % size=1*npars
+xpar = [0,2+gap(ll)];%[2.12,-2.11,-2.11,2.11];%linspace(0,0,npars); % size=1*npars
 ypar = linspace(0,0,npars);%[1.32,1.31,-1.31,-1.31];%[-1,1];
 % zpar = linspace(0,0,npars);%[-1,1];
-zpar = 0:0.20:(npars-1)*0.20;
+zpar = [0,0.2];
 rpar = [xpar;ypar;zpar]'; % size=npars*3
 
 xrecord = zeros(itmax,npars);
@@ -107,7 +115,6 @@ Eps3rateold = zeros(npars,1);
 Etarateold = zeros(npars,1);
 
 % Read patch info
-% HOW TO CALCULATE MOMENTS OF INERTIA FOR AXISYMM PARTICLES?!?
 [x_rel,y_rel,z_rel,DeltaArea,NN,NormVec,a,b,c]=F_GeometryAxiSphere(filename);
 mass = 4/3*rhop*pi*a*b*c; % particle mass
 Ixpf = mass*(b^2+c^2)/5; % moment of inertia in particle frame
@@ -141,6 +148,8 @@ fprintf(fid,'time,overlap,vn_rel,vt_rel,id1,id2\n');
 % Movie file
 M = moviein(20);
 
+fprintf('Particle Separation: %0.4f \n', gap(ll));
+
 % Temporal evolution starts
 for tt = 1:itmax
     time = tt*dt;
@@ -162,7 +171,7 @@ for tt = 1:itmax
     % (2) Calculate induced surface charge
     %tic;
     t1 = cputime;
-    [sigma,E_pat,sig_b]=F_InducedChrg(npars,sigma_f_scalar,...
+    [sigma,E_pat,sig_b,U1,Correct]=F_InducedChrg(npars,sigma_f_scalar,...
         kappa_air,kappa_p,DeltaArea,NN,x_pat,y_pat,z_pat,NormVec_IF,...
         Ex,Ey,Ez,sig_b);
     t2 = cputime - t1;
@@ -174,7 +183,34 @@ for tt = 1:itmax
     % Note: F_pat(patch id,particle id,dimension)
     [F_par,M_par] = F_ForceTorque(sigma,E_pat,DeltaArea,NN,npars,...
     x_pat,y_pat,z_pat,xpar,ypar,zpar);
+    
+    fprintf('F_par = %f\n',F_par(2,1));
+    
+    % Compute the F_base = pi*R^2*sigma^2/eps0
+    F_base = pi*(1^2)*(1*1)/1;% pi*(1^2)*(1^2)/1;
+     fprintf('F_dimensionless = %f\n',F_par(2,1)/F_base);
+     Fdim_save_mg(ll) = F_par(2,1)/F_base;
+    
+    % Compute self energy
+    [E_self] = F_InterEnergy(npars,NN,sigma_f_scalar,...
+    DeltaArea,sigma,x_pat,y_pat,z_pat,Correct);
 
+    U_base = 2*pi*(1^3)*(1^2)/1; % U_base = 2*pi*R^3*sigma^2/eps0
+    U_self(ll) = sum(E_self)/U_base;
+    U1 = U1/U_base-U_self(ll);
+%     U1 = U1/U_base;
+    U_save(ll) = U1;
+    U_save_mg(ll) = U1;
+    
+    fprintf('U1_dimensionless = %f\n',U1);
+    %fprintf('U2_dimensionless = %f\n',U2);
+%     totalchrg = sigma_f_scalar*sum(DeltaArea);
+%     inducedchrg = sum(sig_b(1:3656).*DeltaArea);
+%     actualchrg = sum(sigma(1:3656).*DeltaArea);
+%     fprintf('Total charge = %f\n',totalchrg);
+%     fprintf('Induced charge = %f\n',inducedchrg);
+%     fprintf('Actual charge = %f\n',actualchrg);
+    
     F_par = F_par*EScoeff;
     M_par = M_par*EScoeff; %dimensionless
 
@@ -230,17 +266,20 @@ for tt = 1:itmax
     yplot = reshape(y_pat,[npars*NN,1]);
     zplot = reshape(z_pat,[npars*NN,1]);
     scatter3(xplot,yplot,zplot,10,sigma,'filled');
+    cbar = colorbar;
+    cbarTitle = title(cbar, '\sigma');
+    cbarTitle.FontName = 'Times New Roman';
+    cbarTitle.FontSize = 16;
     
     xlabel('X');
     ylabel('Y');
     zlabel('Z');
     set(gca,'LineWidth',1.5);
     axis equal;
-    colorbar;
 %     xlim([-10,10]);
 %     ylim([-10,10]);
 %     zlim([-5,5]);
-    %view([0,0,8]);
+    view([0,90,8]);
     
     M(figure_id) = getframe;
     [FigA,FigMap] = rgb2ind(frame2im(getframe),256);
@@ -277,6 +316,24 @@ for tt = 1:itmax
     Fxrecord(tt,:) = F_par(:,1)';
     Fyrecord(tt,:) = F_par(:,2)';
     Fzrecord(tt,:) = F_par(:,3)';
+    
+    fprintf('\n');
 end % for tt = 1:itmax 
 
 fclose(fid);
+end
+
+figure;
+scatter(gap,Fdim_save_mg);
+box on; axis equal; grid on;
+
+filenameStr = ['Par_distmesh_',num2str(length(x_rel)),'_mv_data'];
+uinp = input(['Would you like to save this particle as ', filenameStr ,'.mat (y/n)?\n   '],'s');
+if(strcmp(uinp,'y') == 1)
+    save(filenameStr,'gap','Fdim_save_mg','U_save_mg');
+end
+
+
+
+
+

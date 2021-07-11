@@ -1,4 +1,4 @@
-function [p,t]=distmeshsurface(fd,fh,h0,bbox,varargin)
+function [p,t]=distmeshsurface_gluedPars(fd,fh,h0,bbox,sphCents,varargin)
 %DISTMESHSURFACE 3-D Surface Mesh Generator using Distance Functions.
 %   [P,T]=DISTMESHSURFACE(FD,FH,H0,BBOX,FPARAMS)
 %

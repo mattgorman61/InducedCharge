@@ -64,9 +64,9 @@ Ext_EField_z = 0;
 R0=1;
 x_pcs = [2*R0];
 y_pcs = [2*R0];
-z_pcs = [0];
+z_pcs = [3*R0];
 %surfDists = sqrt((x_pcs-dxs).^2 + (y_pcs-dys).^2 + (z_pcs-dzs).^2) /R;
-pcharge = [0];
+pcharge = [1000];
 
 % EVENTUALLY WANT TO MAKE CODE ABLE TO HANDLE ANY NUMBER OF POINT CHARGES
 
@@ -133,7 +133,8 @@ sigma = sigma_b + sigma_f;
 
 if(lshowSurfaceCharge)
     figure();
-    F_Plot_sigmaB(x,y,z,x_pcs,y_pcs,z_pcs,sigma_b,lpCharge,lEField,Ext_EField_x,Ext_EField_y,Ext_EField_z);
+    patchSize = 25;
+    F_Plot_sigmaB(patchSize,x,y,z,x_pcs,y_pcs,z_pcs,sigma_b,lpCharge,lEField,Ext_EField_x,Ext_EField_y,Ext_EField_z);
     %{
     fig2 = figure(2);
     scatter3(x,y,z,12,sigma_b,'filled');

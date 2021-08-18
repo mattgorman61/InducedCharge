@@ -1,0 +1,8 @@
+Testing #Patches Resolution
+
+Distance (Tip-Tip): [0.1 R0, 0.2 R0, 0.5 R0]
+Distance (Mount-Val): 0.15 R0
+Roughness Amplitude: [0.05 R0, 0.1 R0, 0.25 R0]
+Number of Patches: [>1000, >10000, >100000]
+alpha = 15, phi symmetry
+R0 = 1

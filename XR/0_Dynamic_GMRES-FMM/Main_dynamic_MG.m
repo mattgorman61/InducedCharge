@@ -5,7 +5,7 @@ close all;
 % =========================================================================
 % Fundamental settings
 % filename = 'AxisymmPar_PhiSymm_300.mat'; % Geometry File
-filename = 'Sphere_300.mat'; % Geometry File
+filename = 'Par_distmesh_2088.mat'; % Geometry File
 npars = 2;%4;
 dt = 0.001;%0.064; %5E-3; %1E-3
 itmax = 2; % 10000
@@ -58,9 +58,10 @@ Ey = Ey_Phy*epsilon/sigma_null;
 Ez = Ez_Phy*epsilon/sigma_null;
 
 % Location
-xpar = 0:4.2:(npars-1)*4.2;%[2.12,-2.11,-2.11,2.11];%linspace(0,0,npars); % size=1*npars
+xpar = 0:2.15:(npars-1)*2.15;%[2.12,-2.11,-2.11,2.11];%linspace(0,0,npars); % size=1*npars
 ypar = linspace(0,0,npars);%[1.32,1.31,-1.31,-1.31];%[-1,1];
-zpar = linspace(0,0,npars);%[-1,1];
+% zpar = linspace(0,0,npars);%[-1,1];
+zpar = 0:0.20:(npars-1)*0.20;
 rpar = [xpar;ypar;zpar]'; % size=npars*3
 
 xrecord = zeros(itmax,npars);
@@ -106,6 +107,7 @@ Eps3rateold = zeros(npars,1);
 Etarateold = zeros(npars,1);
 
 % Read patch info
+% HOW TO CALCULATE MOMENTS OF INERTIA FOR AXISYMM PARTICLES?!?
 [x_rel,y_rel,z_rel,DeltaArea,NN,NormVec,a,b,c]=F_GeometryAxiSphere(filename);
 mass = 4/3*rhop*pi*a*b*c; % particle mass
 Ixpf = mass*(b^2+c^2)/5; % moment of inertia in particle frame
@@ -234,6 +236,7 @@ for tt = 1:itmax
     zlabel('Z');
     set(gca,'LineWidth',1.5);
     axis equal;
+    colorbar;
 %     xlim([-10,10]);
 %     ylim([-10,10]);
 %     zlim([-5,5]);

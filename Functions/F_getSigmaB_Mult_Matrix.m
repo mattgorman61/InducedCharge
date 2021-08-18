@@ -23,11 +23,11 @@ Npatches = length(x);
 % nVectM(:,:,1) = nVX1, nVX2, nVX3, ... (repeated for each row)
 % nVectM(:,;,2) = nVY1, nVY2, nVY3, ... (repeated for each row)
 % etc.
-nVectM = zeros(Npatches, Npatches,3);
-% for i = 1:3
-%     tempMat = repmat(nVect(:,i),1,Npatches);
-%     nVectM(:,:,i) = tempMat;
-% end
+% nVectM = zeros(Npatches, Npatches,3);
+for i = 1:3
+    tempMat = repmat(nVect(:,i),1,Npatches);
+    nVectM(:,:,i) = tempMat;
+end
 
 k_delta = k_air - k_obj; k_bar = 0.5*(k_air + k_obj);
 
@@ -72,6 +72,6 @@ Mpc = diag(pcpld*nVect')./(rpcp.^3);
 Mpc(isnan(Mpc) | isinf(Mpc)) = 0;
 
 b2 = ((1-k_bar)*eye(Npatches) - k_delta/4/pi*dAmat.*M)*sigma_f - k_delta/4/pi*pcharge*Mpc - ...
-    k_delta/4/pi*(Ext_EField_x.*nVect(:,1)+ Ext_EField_y.*nVect(:,2) + Ext_EField_z.*nVect(:,3));
+    k_delta/4/pi*(Ext_EField_x.*nVect(:,1) + Ext_EField_y.*nVect(:,2) + Ext_EField_z.*nVect(:,3));
 
 sigma_b2 = A2\b2;

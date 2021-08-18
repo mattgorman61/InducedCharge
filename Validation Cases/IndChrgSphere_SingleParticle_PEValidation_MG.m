@@ -6,10 +6,11 @@ fprintf('INDUCED CHARGE ON A SPHERE\n\n');
 
 % Add Function Folder to Current Path
 currFolder = pwd;
-% fprintf('%s',currFolder);
-path1 = strcat(currFolder,'\..\Functions');        addpath(path1);
-path2 = strcat(currFolder,'\..\Functions\Plots');  addpath(path2);
-
+fprintf('%s',currFolder);
+% path1 = strcat(currFolder,'\..\Functions');        addpath(path1);
+% path2 = strcat(currFolder,'\..\Functions\Plots');  addpath(path2);
+path1 = strcat(currFolder,'/../Functions');        addpath(path1);
+path2 = strcat(currFolder,'/../Functions/Plots');  addpath(path2);
 
 
 % Logicals
@@ -17,7 +18,7 @@ lshowSpheres = false;
     lshowNVects = false;
 lshowSurfaceCharge = true;
 lshowPEResults = true; %  N/A for multiple spheres
-lshowForceResults = true;
+lshowForceResults = false;
 
 lpCharge = true;
 lEField = false;
@@ -27,7 +28,7 @@ lEField = false;
 R0 = 1;
 %R = [R0,0.5*R0];
 R = R0;
-NpatchesSph = 2000; % Number of patches per sphere
+NpatchesSph = 250; % Number of patches per sphere
 numSpheres = 1; 
 Npatches = numSpheres*NpatchesSph;
 
@@ -136,7 +137,8 @@ sigma = sigma_b + sigma_f;
 
 if(lshowSurfaceCharge)
     figure();
-    F_Plot_sigmaB(x,y,z,x_pcs,y_pcs,z_pcs,sigma_b,lpCharge,lEField,Ext_EField_x,Ext_EField_y,Ext_EField_z);
+    patchSize = 800;
+    F_Plot_sigmaB(patchSize,x,y,z,x_pcs,y_pcs,z_pcs,sigma_b,lpCharge,lEField,Ext_EField_x,Ext_EField_y,Ext_EField_z);
     %set(gcf,'Position',[100,100,500,400]);
     %{
     fig2 = figure(2);
@@ -168,7 +170,8 @@ end
 
 if(lshowPEResults)
     figure();
-    F_Plot_PEValidation(R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,epsilon_0,Ext_EField_x,Ext_EField_y,Ext_EField_z );
+    markerSize = 50;
+    F_Plot_PEValidation(markerSize,R,x,y,z,nVect,x_pcs,y_pcs,z_pcs,pcharge,sigma_f,epsilon_0,Ext_EField_x,Ext_EField_y,Ext_EField_z );
 end
 
 %% Electrostatic Force Calculation

@@ -1,4 +1,4 @@
-function [finished] = F_Plot_PEValidation(R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_f,epsilon_0,Ext_EField_x,Ext_EField_y,Ext_EField_z)
+function [finished] = F_Plot_PEValidation(markerSize,R,x,y,z,nVect,x_pc,y_pc,z_pc,pcharge,sigma_f,epsilon_0,Ext_EField_x,Ext_EField_y,Ext_EField_z)
 % PLOTS SIMULATION RESULTS AGAINST ANALYTICAL RESULTS
 %   Analytical Results from Barros and Luijten 2014, Phys. Rev. Letters
 
@@ -129,13 +129,13 @@ end
         plot(d_vect_anal,PE_vect_anal(:,i),'color',colorsVect{i});
     end
     
-    scatter(R_vect, U_kt0_Norm, 50, colorsVect{1}, '^', 'filled', 'MarkerEdgeColor', 'k');
-    scatter(R_vect, U_kt0p025_Norm, 50, colorsVect{2}, '^', 'filled', 'MarkerEdgeColor', 'k');
-    scatter(R_vect, U_kt0p1_Norm, 50, colorsVect{3}, '^', 'filled', 'MarkerEdgeColor', 'k');
-    scatter(R_vect, U_kt0p4_Norm, 50, colorsVect{4}, 's', 'filled', 'MarkerEdgeColor', 'k');
-    scatter(R_vect, U_kt2p5_Norm, 50, colorsVect{5}, '^', 'filled', 'MarkerEdgeColor', 'k');
-    scatter(R_vect, U_kt10_Norm, 50, colorsVect{6}, 's', 'filled', 'MarkerEdgeColor', 'k');
-    scatter(R_vect, U_kt40_Norm, 50, colorsVect{7}, '^', 'filled', 'MarkerEdgeColor', 'k');
+    scatter(R_vect, U_kt0_Norm, markerSize, colorsVect{1}, '^', 'filled', 'MarkerEdgeColor', 'k');
+    scatter(R_vect, U_kt0p025_Norm, markerSize, colorsVect{2}, '^', 'filled', 'MarkerEdgeColor', 'k');
+    scatter(R_vect, U_kt0p1_Norm, markerSize, colorsVect{3}, '^', 'filled', 'MarkerEdgeColor', 'k');
+    scatter(R_vect, U_kt0p4_Norm, markerSize, colorsVect{4}, 's', 'filled', 'MarkerEdgeColor', 'k');
+    scatter(R_vect, U_kt2p5_Norm, markerSize, colorsVect{5}, '^', 'filled', 'MarkerEdgeColor', 'k');
+    scatter(R_vect, U_kt10_Norm, markerSize, colorsVect{6}, 's', 'filled', 'MarkerEdgeColor', 'k');
+    scatter(R_vect, U_kt40_Norm, markerSize, colorsVect{7}, '^', 'filled', 'MarkerEdgeColor', 'k');
     
     
     %leg3 = legend(k_tildaVectString);

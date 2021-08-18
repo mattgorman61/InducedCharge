@@ -19,6 +19,9 @@ if(lshowNVects)
     quiver3(x,y,z,nVect(:,1),nVect(:,2),nVect(:,3),3,'r');
     tit1 = title('Normal Vectors'); tit1.FontName = 'Times New Roman';
     tit1.FontSize = 12;
+    xlabel('X');
+    ylabel('Y');
+    zlabel('Z');
     %set(gca,'LineWidth',1.5); set(gcf,'Position',[100,400,500,400]);
 end
 
